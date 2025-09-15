@@ -1,0 +1,231 @@
+.login-sectionn {
+    width: 100%;
+    height: auto;
+    padding: 3rem 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-sectionn .discount-banner {
+    width: 50%;
+    height: 150px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: auto;
+}
+
+.login-sectionn .login-boxx {
+    /* background: white; */
+    border-radius: 0 30px 30px 0;
+    padding: 0 50px;
+}
+
+.login-sectionn .login-boxx .number {
+    background: transparent;
+    border-radius: 5px;
+    border: 1px solid #3030303b;
+    padding: 7px;
+}
+
+.formContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+
+.createloaderOverlay {
+    position: absolute;  
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.AdmincontentLayout {
+    height: 90vh;
+    overflow: scroll;
+}
+
+.analyticSection {
+    margin: 36px 56px;
+
+}
+
+.analyticOrder {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.analyticTotalOrder {
+    width: 40%;
+    background-color: #E9F0FF;
+    border-radius: 10px;
+    padding: 30px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.totalorderImage {
+    border-radius: 30px;
+    padding: 1rem;
+    box-shadow: 0 0 10px #0002;
+    background: #fff;
+    max-height: 100px;
+    width: 100px;
+}
+
+.analyticTotalOrderHead {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: end;
+}
+
+.analyticTotalOrderSubhead {
+    font-size: 24px;
+    font-weight: 700;
+    color: #011A70;
+    text-align: end;
+}
+
+.analyticViewOrder {
+    margin: 36px 0;
+}
+
+.viewstoreList {
+    display: flex;
+    border: none;
+    background: none;
+    font-size: 20px;
+    margin-left: 54px;
+}
+
+.close-button {
+    position: absolute;
+    top: 1%;
+    right: 4%;
+    border: none;
+    background: red;
+    font-size: 20px;
+    color: white;
+    border-radius: 8px;
+}
+
+.neo_btn_container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.product_neo_btn {
+    margin: 5px;
+    padding: 7px 10px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    background: none;
+}
+
+.product_left_arrow {
+    font-size: 52px;
+    color: #111F6A;
+}
+
+.product_right_arrow {
+    font-size: 52px;
+    color: #63CFC2;
+}
+
+.active-page-button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.storeView {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 82%;
+    background: #fff;
+    border: 1px solid #000;
+}
+
+.storeViewOverlay {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background: #000;
+    left: 0%;
+    height: 100%;
+    opacity: 0.2;
+}
+
+.storeViewData {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 82%;
+    background: #fff;
+    border: 1px solid #000;
+    padding: 10px 20px;
+}
+.css-w76bbz-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select{
+    padding: 10px !important;
+}
+
+
+.cardShow:hover {
+    background-color: #007bff;
+    cursor: pointer;
+}
+.topBannerImg{
+    width:100%;
+    height: 100%;
+    max-width:20rem;
+}
+.EditBannerPop{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    width: 60%;
+    border-radius: 20px;
+}
+.Bannerthumbnail{
+    max-width:100px; 
+}
+.SyncProductsOverLay{
+    position: fixed;
+    background: black;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+}
+@media only screen and (max-width: 767px) {
+.analyticTotalOrder {
+    width:100%;
+}
+.product_neo_btn {
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0px;
+    padding: 5px 7px;
+}
+}

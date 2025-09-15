@@ -1,0 +1,224 @@
+.sidebarLayout {
+    width: 20%;
+    height: 100vh;
+}
+
+.sidebar {
+    /* background: #353a40; */
+    /* height: 100vh; */
+}
+
+.contentLayout {
+    width: 100%;
+}
+
+.sideNav .link {
+    /* color: #fff; */
+    /* font-size: 19px; */
+    /* height: 30px; */
+    margin: 1rem 1rem;
+    /* background: red; */
+    padding: rem;
+    display: flex;
+    justify-content: flex-start;
+    /* align-items: center; */
+    padding: 1rem;
+    /* border-radius: 7px; */
+    border-bottom: 1px solid #fff;
+    opacity: 0.7;
+}
+
+.sideNav .link:hover {
+    background: #007aff;
+    border-radius: 7px;
+    border-bottom: none;
+    opacity: 1;
+}
+
+.storeListSection {
+    position: relative;
+}
+
+.storeBtn {
+    position: absolute;
+    top: 21%;
+    right: 3%;
+}
+
+/* .selectWindow{
+    overflow-y: 'scroll' !important;
+    height:'400px' !important;
+} */
+.option:hover {
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+.range_label {
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+    padding-right: 10px;
+}
+
+.start_date_input {
+    width: 230px;
+    padding: 12px;
+    background-color: #132D84;
+    border: 2px solid white;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 400;
+    outline: none;
+}
+
+.start_date_input::placeholder {
+    color: white;
+}
+
+.end_date_input::placeholder {
+    color: white;
+}
+
+.end_date_input {
+    width: 230px;
+    padding: 12px;
+    background-color: #132D84;
+    border: 2px solid white;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 400;
+    outline: none;
+}
+
+.calender1 {
+    position: absolute;
+    top: 52%;
+    left: 19%;
+}
+
+
+
+.calender2 {
+    position: absolute;
+    top: 52%;
+    left: 55%;
+}
+
+.dateBttn {
+    background-color: #132D84;
+    color: white;
+    margin-top: 30px;
+}
+
+.dateBttn:hover {
+    color: white;
+
+}
+
+
+/* ::-webkit-scrollbar{
+    display: block;
+} */
+@media only screen and (max-width: 767px) {
+
+    .header{
+        height: 60px;
+        padding: 1rem !important;
+        justify-content: center !important;
+    }
+    .sidebarLayout{
+        width:unset;
+        height:unset;
+    }
+    .hamburger{
+        width: 35px;
+        height: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #fff;
+        border: none;
+        position: absolute;
+        top: -6%;
+        left: 0%;
+        z-index: 999;
+    }
+    .sidebarLayout .sidebarContent{
+        width:100%;
+        position: absolute;
+        top: 0%;
+        right: 0%;
+        left: 0%;
+        z-index: 999;
+    }
+    .dashboardContent{
+        height:100vh;
+    }
+    .layoutBody{
+        flex-direction: column;
+    }
+}
+.framesOption{
+    cursor: pointer;
+    border:1px solid #ccc;
+    border-radius:10px;
+    overflow:hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.framesOption.active{
+    border:1px solid green;
+}
+.editorSection{
+    border-right: 1px solid #ccc;
+}
+
+.viewFrames{
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    background: #fff;
+    height: 100vh;
+    /* border: 1px solid; */
+    left: 0%;
+}
+.fileInput{
+    /* position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -38%); */
+    border-radius: 1rem;
+    /* border: 2px dashed #1e80e8; */
+    padding: 0;
+    background-color: #f1f8fe;
+    min-height: auto;
+}
+.fileInputLabel{
+    width: 600px;
+    height: 400px;
+    flex-direction: column;
+    cursor:pointer;
+}
+.BrowseFile{
+    padding: 8px 16px;
+    min-width: 150px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #1e80e8;
+    border: 2px solid #1e80e8;
+    border-radius: 50px;
+    transition: 0.3s;
+}
+.BrowseText{
+    margin-bottom: 30px;
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2580e8;
+}

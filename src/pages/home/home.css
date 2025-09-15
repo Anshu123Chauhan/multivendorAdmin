@@ -1,0 +1,67 @@
+.login-sectionn {
+    width: 100%;
+    height: auto;
+    padding: 3rem 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-sectionn .discount-banner {
+    width: 50%;
+    height: 150px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: auto;
+}
+
+.login-sectionn .login-boxx {
+    background: white;
+    border-radius: 0 30px 30px 0;
+    padding: 0 50px;
+}
+
+.login-sectionn .login-boxx .number {
+    background: transparent;
+    border-radius: 5px;
+    border: 1px solid #3030303b;
+    padding: 7px;
+}
+
+.formContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 55vh;
+}
+
+
+.LoginAs {
+    right: 5px;
+    font-size: 13px;
+}
+
+
+.loginloader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    /* width: %; */
+    z-index: 9;
+    background: #fff;
+}
+
+.loginOverlay {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background: #000;
+    left: 0%;
+    height: 100%;
+    opacity: 0.2;
+}
