@@ -12,139 +12,226 @@ import { AiOutlineEye } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { useStepContext } from "@mui/material";
+import { getCookie } from "../config/webStorage";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
-const Userlist = () => {
-    const [userData, setUserData] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editToggle, setEditToggle] = useState(false);
-    const [editId, setEditId] = useState(null);
-    const [newFilter, setNewFilter] = useState({
-        name: '',
-        status: 'Active'
+const UserList = () => {
+  const [userData, setuserData] = useState([]);
+
+  const [allAdmin, setAllAdmin] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editToggle, setEditToggle] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [newFilter, setNewFilter] = useState({
+    name: "",
+    status: "Active",
+  });
+  const [loading, setloading] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const token = getCookie("zrotoken");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
+    setloading(true);
+    try {
+      const response = await axios.get(`${apiurl}/admin/user-List`, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.data.success === true) {
+        setuserData(response?.data?.userList);
+        setAllAdmin(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching filters:", error);
+    } finally {
+      setloading(false);
+    }
+  };
+
+  const toggleStatus = async (admin) => {
+    const { id } = admin;
+
+    try {
+      const response = await axios.put(
+        `${apiurl}/admin/auth/update`,
+        {
+          id: id,
+          username: admin?.username,
+          email: admin?.email,
+        },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.data;
+      if (data.success) {
+        fetchUser();
+      }
+    } catch (error) {
+      console.error("Error updating admin status:", error);
+    }
+  };
+
+  const handleEditStatus = (id) => {
+    navigate(`/editadmin/${id}`);
+  };
+
+  const deleteuser = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won’t be able to revert this action!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("Deleting admin with id:", id);
+        handleDeleteuser(id);
+        Swal.fire("Deleted!", "The admin has been deleted.", "success");
+      }
     });
-    const [loading, setloading] = useState(false);
-    const [searchInput, setSearchInput] = useState("");
+  };
 
-    const navigate = useNavigate();
+  const handleDeleteuser = async (id) => {
+    try {
+      const response = await axios.delete(`${apiurl}/admin/auth/delete/${id}`, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
+      const data = await response.data;
 
-    const fetchUsers = async () => {
-        setloading(true);
-        try {
-            const response = await axios.get(`${apiurl}/admin/analytics/user-activity`, {
-                headers: {
-                    "ngrok-skip-browser-warning": "69420"
-                }
-            });
-            const data = await response.data;
-            if (data.success) {
-                console.log("data", data);
-                setUserData(data?.data);
-                setAllUsers(data?.data)
-            }
-        } catch (error) {
-            console.error('Error fetching filters:', error);
-        }
-        finally {
-            setloading(false);
-        }
-    };
+      if (data.success) {
+        toast.success("Deleted Successfully");
+        fetchUser();
+      }
+    } catch (error) {
+      console.error("Error updating filter:", error);
+    }
+  };
 
+  const handleSearch = (value) => {
+    const trimmedValue = value.trim();
+    setSearchInput(trimmedValue);
 
+    if (!trimmedValue) {
+      setuserData(allAdmin);
+      return;
+    }
 
-    const handleSearch = (value) => {
-        const trimmedValue = value.trim();
-        setSearchInput(trimmedValue);
+    console.log("trimmed value", trimmedValue);
 
-        if (!trimmedValue) {
-            setUserData(allUsers);
-            return;
-        }
-
-        console.log("trimmed value", trimmedValue);
-
-        const updatedFilter = userData.filter(item =>
-            item?.ipAddress.includes(trimmedValue.toLowerCase())
-        );
-
-        setUserData(updatedFilter);
-    };
-
-    return (
-        <Layout>
-            <Container>
-                {loading == true ? (
-                    <DynamicLoader maintext="wait" subtext="Fetching User's Data" />
-                ) : null}
-                <div className="flex flex-wrap justify-between w-full h-full  overflow-auto">
-                    <div className="flex flex-col  py-2 px-2 w-full">
-                        <BackHeader
-                            title="Users"
-                            rightSide={
-                                <div className="flex gap-3 w-[500px]">
-
-                                  
-
-                                    <Input.search
-                                        placeholder="Search User"
-                                        value={searchInput}
-                                        onChange={(e) => handleSearch(e.target.value)}
-                                    />
-                                </div>
-                            }
-                        />
-                        <div className="p-6">
-                            <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
-                                <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                                        <tr>
-                                            {[
-                                                "SN.",
-                                                "IP",
-                                                "User Id",
-                                                "Device",
-                                                "Visit Date"
-                                               
-                                            ].map((item, index) => (
-                                                <th key={index} scope="col" className="px-6 py-3">
-                                                    {item}
-                                                </th>
-                                            ))}
-                                        </tr>
-
-                                    </thead>
-                                    <tbody className="text-sm text-gray-700">
-                                        {userData?.map((user, index) => (
-                                            <tr key={user?.id} className="border-t">
-                                                <td className="px-4 py-3">{index + 1}</td>
-                                                <td className="px-4 py-3">
-                                                   {user.ipAddress}
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                   {user.userId}
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    {user?.userAgent}
-                                                </td>
-                                                 <td className="px-4 py-3">
-                                                    {new Date(user?.createdAt).toLocaleDateString()}
-                                                </td>
-                                               
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Container>
-        </Layout>
+    const updatedFilter = userData.filter((item) =>
+      item?.username.toLowerCase().includes(trimmedValue.toLowerCase())
     );
+
+    setuserData(updatedFilter);
+  };
+
+  return (
+    <Layout>
+      <Container>
+        {loading == true ? (
+          <DynamicLoader maintext="wait" subtext="Fetching user Data" />
+        ) : null}
+        <div className="flex flex-wrap justify-between w-full">
+          <div className="flex flex-col  py-2 px-2 w-full">
+            <BackHeader
+              title="users"
+              rightSide={
+                <div className="flex gap-3 w-[600px]">
+                  <button
+                    className="bg-[#000] hover:bg-[#e7c984] hover:text-[#000]  text-[#fff] w-[150px] p-2 rounded-md"
+                    onClick={() => navigate("/addrole")}
+                  >
+                    Create Role
+                  </button>
+                  <button
+                    className="bg-[#000] hover:bg-[#e7c984] hover:text-[#000]  text-[#fff] w-[150px] p-2 rounded-md"
+                    onClick={() => navigate("/adduser")}
+                  >
+                    Add User
+                  </button>
+
+                  <Input.search
+                    placeholder="Search user"
+                    value={searchInput}
+                    onChange={(e) => handleSearch(e.target.value)}
+                  />
+                </div>
+              }
+            />
+            <div className="relative shadow-md sm:rounded-lg mt-5 overflow-auto h-[75vh]">
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-20">
+                  <tr>
+                    {[
+                      "SN.",
+                      "Name",
+                      "Phone no.",
+                      "Email",
+                      "Status",
+                      "Action",
+                    ].map((item, index) => (
+                      <th key={index} scope="col" className="px-6 py-3">
+                        {item}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="text-sm text-gray-700">
+                  {userData?.map((user, index) => (
+                    <tr
+                      key={user?.id}
+                      className="border-t relative overflow-hidden group hover:bg-gray-50 transition-all duration-500"
+                    >
+                      <td className="relative px-6 py-3">{index + 1}</td>
+                      <td className="relative px-6 py-3 capitalize">
+                        {user?.userName}
+                      </td>
+                      <td className="relative px-6 py-3">{user?.phone}</td>
+                      <td className="relative px-6 py-3">{user?.email}</td>
+                      <td className="relative px-6 py-3">
+                        {user?.isActive === true ? "Approved" : "Pending"}
+                      </td>
+                      <td className="relative px-4">
+                        <span className="flex gap-1 cursor-pointer">
+                          <CiEdit
+                            className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
+                            onClick={() => handleEditStatus(user?.id)}
+                          />
+                          <MdDeleteForever
+                            className="p-1 text-2xl rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
+                            onClick={() => deleteuser(user?.id)}
+                          />
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </Layout>
+  );
 };
 
-export default Userlist;
+export default UserList;

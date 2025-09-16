@@ -72,11 +72,13 @@ import Userlist from "../pages/userlist.js";
 import EditAdmin from "../pages/editAdmin.js";
 import Seller from "../pages/seller.js";
 import AddSeller from "../pages/addSeller.js";
+import AddUser from "../pages/addUser.js";
+import AddRole from "../pages/addRole.js";
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
 
   const location = useLocation();
-  
+
   useEffect(() => {
     if (token && location.pathname === "/admin") {
       validateToken(token)
@@ -103,15 +105,21 @@ const Router = () => {
       />
       <Route path="/update_password" element={<ChangePassword />} />
       <Route path="/addseller" element={<AddSeller />} />
+      <Route path="/sellerList" element={<Seller />} />
       <Route
-        path="/sellerList"
-        element={<PrivateRoute element={<Seller />} />}
+        path="/userlist"
+        element={<PrivateRoute element={<Userlist />} />}
+      />
+      <Route path="/addUser" element={<PrivateRoute element={<AddUser />} />} />
+      <Route path="/addrole" element={<PrivateRoute element={<AddRole />} />} />
+      <Route
+        path="/addbanner"
+        element={<PrivateRoute element={<AddBanner />} />}
       />
       <Route
         path="/editadmin/:id"
         element={<PrivateRoute element={<EditAdmin />} />}
       />
-
       <Route path="/account" element={<PrivateRoute element={<Account />} />} />
       <Route
         path="/profile"
@@ -121,7 +129,6 @@ const Router = () => {
         path="/profile/:adminobjId/edit"
         element={<PrivateRoute element={<EditAdminDetails />} />}
       />
-
       <Route
         path="/dashboard"
         element={
@@ -132,13 +139,11 @@ const Router = () => {
         path="/dashboard/:pathname"
         element={<PrivateRoute element={<Dashboard />} />}
       />
-
       {/* --------------Stores-------------------------------*/}
       <Route
         path="/stores"
         element={<PrivateRoute element={<Stores />} PermissionName="stores" />}
       />
-
       <Route
         path="/stores/add"
         element={
@@ -157,18 +162,14 @@ const Router = () => {
           <PrivateRoute element={<StoreDetails />} PermissionName="stores" />
         }
       />
-
       <Route
         path="/analytics"
         element={
           <PrivateRoute element={<Analytics />} PermissionName="analysis" />
         }
       />
-
       <Route path="/filter" element={<PrivateRoute element={<Filter />} />} />
-
       <Route path="/banner" element={<PrivateRoute element={<Banner />} />} />
-
       <Route
         path="/addbanner"
         element={<PrivateRoute element={<AddBanner />} />}
@@ -201,7 +202,6 @@ const Router = () => {
         path="/editbanner/:id"
         element={<PrivateRoute element={<EditBanner />} />}
       />
-
       <Route
         path="/analytics/report"
         element={
@@ -211,32 +211,23 @@ const Router = () => {
           />
         }
       />
-
       <Route path="/service" element={<PrivateRoute element={<Service />} />} />
-      <Route
-        path="/userlist"
-        element={<PrivateRoute element={<Userlist />} />}
-      />
 
       <Route path="/themes" element={<PrivateRoute element={<Themes />} />} />
-
       {/* <Route path="/apps" element={<PrivateRoute element={<Apps />} />} /> */}
       <Route
         path="/integration"
         element={<PrivateRoute element={<Integration />} />}
       />
-
       {/* <Route path="/apps" element={<PrivateRoute element={<Apps />} />} /> */}
       <Route
         path="/integration"
         element={<PrivateRoute element={<Integration />} />}
       />
-
       <Route
         path="/integration"
         element={<PrivateRoute element={<Integration />} />}
       />
-
       <Route>
         <Route
           path="/StoreDetails/view/:id"
@@ -249,12 +240,10 @@ const Router = () => {
           element={<PrivateRoute element={<ServiceDetails />} />}
         />
       </Route>
-
       <Route
         path="/integration"
         element={<PrivateRoute element={<Integration />} />}
       />
-
       <Route
         path="/imagemapping"
         element={<PrivateRoute element={<ImageMapping />} />}
@@ -267,7 +256,6 @@ const Router = () => {
         path="/pricemapping"
         element={<PrivateRoute element={<PriceMapping />} />}
       />
-
       {/* <Route
         path="/apps/create"
         element={<PrivateRoute element={<CreateApp />} />}
@@ -276,22 +264,18 @@ const Router = () => {
         path="/apps/:id"
         element={<PrivateRoute element={<AppDetails />} />}
       /> */}
-
       <Route
         path="/locations"
         element={<PrivateRoute element={<Locations />} />}
       />
-
       <Route
         path="/settings/domains"
         element={<PrivateRoute element={<Domains />} />}
       />
-
       <Route
         path="/settings/notifications"
         element={<PrivateRoute element={<Notifications />} />}
       />
-
       <Route
         path="/notifications/webhooks"
         element={<PrivateRoute element={<Webhooks />} />}
@@ -304,42 +288,34 @@ const Router = () => {
         path="/languages"
         element={<PrivateRoute element={<Language />} />}
       />
-
       <Route
         path="/settings/policy"
         element={<PrivateRoute element={<PoliciesPage />} />}
       />
-
       <Route
         path="/settings/permission"
         element={<PrivateRoute element={<Permission />} />}
       />
-
       <Route
         path="/settings/permission/edit"
         element={<PrivateRoute element={<UpdatePermission />} />}
       />
-
       <Route
         path="/locations"
         element={<PrivateRoute element={<Locations />} />}
       />
-
       <Route
         path="/settings/domains"
         element={<PrivateRoute element={<Domains />} />}
       />
-
       <Route
         path="/settings/notifications"
         element={<PrivateRoute element={<Notifications />} />}
       />
-
       <Route
         path="/settings/notifications/customer/account_password_reset/preview"
         element={<PrivateRoute element={<CustomerPasswordReset />} />}
       />
-
       <Route
         path="/notifications/webhooks"
         element={<PrivateRoute element={<Webhooks />} />}
@@ -352,39 +328,31 @@ const Router = () => {
         path="/languages"
         element={<PrivateRoute element={<Language />} />}
       />
-
       <Route
         path="/settings/policy"
         element={<PrivateRoute element={<PoliciesPage />} />}
       />
-
       <Route
         path="/settings/permission"
         element={<PrivateRoute element={<Permission />} />}
       />
-
       <Route
         path="/settings/permission/edit"
         element={<PrivateRoute element={<UpdatePermission />} />}
       />
-
       <Route path="/filter" element={<PrivateRoute element={<Filter />} />} />
-
       <Route
         path="/locations"
         element={<PrivateRoute element={<Locations />} />}
       />
-
       <Route
         path="/settings/domains"
         element={<PrivateRoute element={<Domains />} />}
       />
-
       <Route
         path="/settings/notifications"
         element={<PrivateRoute element={<Notifications />} />}
       />
-
       <Route
         path="/notifications/webhooks"
         element={<PrivateRoute element={<Webhooks />} />}
@@ -401,7 +369,6 @@ const Router = () => {
         path="/settings/policy"
         element={<PrivateRoute element={<PoliciesPage />} />}
       />
-
       <Route
         path="/createstore"
         element={<PrivateRoute element={<CreateStore />} />}
@@ -422,7 +389,6 @@ const Router = () => {
         path="/addsubcategory"
         element={<PrivateRoute element={<Addsubcategory />} />}
       />
-
       <Route
         path="/subcategory"
         element={<PrivateRoute element={<Subategory />} />}
@@ -447,7 +413,6 @@ const Router = () => {
         path="/editServices/:serviceId/"
         element={<PrivateRoute element={<EditServices />} />}
       />
-
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

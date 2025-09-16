@@ -45,14 +45,9 @@ const Seller = () => {
           "Content-Type": "application/json",
         },
       });
-
-      console.log("seller response------------>", response);
-
-      const data = await response.data;
       if (response.data.success === true) {
-        console.log("data", data);
         setsellerData(response?.data?.sellerList);
-        setAllAdmin(data?.data);
+        setAllAdmin(response.data);
       }
     } catch (error) {
       console.error("Error fetching filters:", error);
@@ -178,7 +173,7 @@ const Seller = () => {
             />
             <div className="relative shadow-md sm:rounded-lg mt-5 overflow-auto h-[75vh]">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-30">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-20">
                   <tr>
                     {[
                       "SN.",
@@ -215,7 +210,7 @@ const Seller = () => {
                       <td className="relative px-6 py-3">{seller?.phone}</td>
                       <td className="relative px-6 py-3">{seller?.email}</td>
                       <td className="relative px-6 py-3">
-                        {seller?.isActive === true ? "Active" : "InActive"}
+                        {seller?.isActive === true ? "Approved" : "Pending"}
                       </td>
                       <td className="relative px-4">
                         <span className="flex gap-1 cursor-pointer">

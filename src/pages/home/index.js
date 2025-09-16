@@ -64,7 +64,7 @@ function Login() {
 
   //   try {
   //     const response = await fetch(
-  //       "https://blackberry-9ab311620e64.herokuapp.com/adminlogin",
+  //       "https://blackberry-9ab3116e64.herokuapp.com/adminlogin",
   //       {
   //         method: "POST",
   //         headers: {
@@ -111,7 +111,7 @@ function Login() {
 
   //     try {
   //       const response = await fetch(
-  //         "https://blackberry-9ab311620e64.herokuapp.com/user/storeuserlogin",
+  //         "https://blackberry-9ab3120e64.herokuapp.com/user/storeuserlogin",
   //         {
   //           method: "POST",
   //           headers: {

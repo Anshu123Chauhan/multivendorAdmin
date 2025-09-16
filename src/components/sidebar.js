@@ -47,6 +47,11 @@ const Sidebar = () => {
         permission: "sellerList",
       },
       {
+        title: "User",
+        icon: <BiSolidDashboard />,
+        location: "/userlist",
+      },
+      {
         title: "Category",
         icon: <MdOutlineCategory />,
         location: "/category",
