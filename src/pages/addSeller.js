@@ -23,7 +23,6 @@ const AddSeller = () => {
     ifscCode: "",
     bankAccount: "",
     addressProof: "",
-    AddProofImg: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -80,8 +79,8 @@ const AddSeller = () => {
     if (!formData.accountHolder)
       newErrors.accountHolder = "Account holder name is required.";
     if (!formData.ifscCode) newErrors.ifscCode = "IFSC code is required.";
-    if (!formData.AddProofImg)
-      newErrors.AddProofImg = "Address Proof Image is required";
+    if (!formData.addressProof)
+      newErrors.addressProof = "Address Proof Image is required";
     if (!formData.identityProofNumber)
       newErrors.identityProofNumber = "Identity Proof Number is required";
     if (!formData.identityProof)
@@ -102,8 +101,8 @@ const AddSeller = () => {
     try {
       setLoading(true);
       let proofUrl = "";
-      if (formData.AddProofImg) {
-        proofUrl = await handleFileUpload(formData.AddProofImg);
+      if (formData.addressProof) {
+        proofUrl = await handleFileUpload(formData.addressProof);
         if (!proofUrl) {
           toast.error("Failed to upload Address Proof. Try again!");
           setLoading(false);
@@ -113,7 +112,7 @@ const AddSeller = () => {
 
       const payload = {
         ...formData,
-        AddProofImg: proofUrl,
+        addressProof: proofUrl,
       };
 
       const res = await axios.post(`${apiurl}/admin/seller-register`, payload, {
@@ -140,8 +139,7 @@ const AddSeller = () => {
           accountHolder: "",
           ifscCode: "",
           bankAccount: "",
-          addressProof: "",
-          AddProofImg: null,
+          addressProof: null,
         });
       } else {
         toast.warning(res?.data?.data?.message);
@@ -311,9 +309,9 @@ const AddSeller = () => {
               <FloatingInput
                 label="Upload Address Proof Image"
                 type="file"
-                name="AddProofImg"
+                name="addressProof"
                 onChange={handleChange}
-                error={errors.AddProofImg}
+                error={errors.addressProof}
                 required={true}
               />
             </div>
