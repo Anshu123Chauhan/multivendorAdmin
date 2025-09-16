@@ -8,7 +8,7 @@ const Dashboard = () => {
     <Layout>
       <div className="container dashboardContent">
         <div className="row m-1 mt-5 mt-md-5 m-md-5 d-flex justify-content-between flex-column flex-md-row">
-          {/* <Link
+          <Link
             to="/"
             className="text-decoration-none analyticTotalOrder cardShow text-dark"
           >
@@ -22,7 +22,7 @@ const Dashboard = () => {
             <div className="analyticTotalOrderText">
               <h2 className="analyticTotalOrderHead">Profile</h2>
             </div>
-          </Link> */}
+          </Link>
 
           <Link
             to="/createcatalog"

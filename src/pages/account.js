@@ -5,6 +5,7 @@ import { useUser } from "../config/userProvider.js";
 const Account = () => {
   const { userData } = useUser();
   const [activeAccount, setActiveAccount] = useState("profile");
+  
   return (
     <Layout>
       <Container>

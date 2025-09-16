@@ -14,226 +14,10 @@ import { CiEdit } from "react-icons/ci";
 import { useStepContext } from "@mui/material";
 import { getCookie } from "../config/webStorage";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const Seller = () => {
-  const [adminData, setAdminData] = useState([
-    {
-      id: 1,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 2,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 3,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-    {
-      id: 4,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 5,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 6,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-    {
-      id: 1,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 2,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 3,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-    {
-      id: 4,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 5,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 6,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-    {
-      id: 1,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 2,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 3,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-    {
-      id: 4,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 5,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 6,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-    {
-      id: 1,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 2,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 3,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-    {
-      id: 4,
-      username: "John Doe",
-      businessName: "Doe Enterprises",
-      businessAddress: "123 Market Street, New York, NY",
-      phone: "9876543210",
-      email: "john@example.com",
-      status: "Active",
-    },
-    {
-      id: 5,
-      username: "Jane Smith",
-      businessName: "Smith & Co",
-      businessAddress: "456 Park Avenue, Los Angeles, CA",
-      phone: "9876501234",
-      email: "jane@example.com",
-      status: "Inactive",
-    },
-    {
-      id: 6,
-      username: "Ali Khan",
-      businessName: "Khan Traders",
-      businessAddress: "22 MG Road, Mumbai, India",
-      phone: "9988776655",
-      email: "ali@example.com",
-      status: "Active",
-    },
-  ]);
+  const [sellerData, setsellerData] = useState([]);
 
   const [allAdmin, setAllAdmin] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -249,22 +33,25 @@ const Seller = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchAdmin();
+    fetchSeller();
   }, []);
 
-  const fetchAdmin = async () => {
+  const fetchSeller = async () => {
     setloading(true);
     try {
-      const response = await axios.get(`${apiurl}/admin/auth/list`, {
+      const response = await axios.get(`${apiurl}/admin/seller-List`, {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
       });
+
+      console.log("seller response------------>", response);
+
       const data = await response.data;
-      if (data.success) {
+      if (response.data.success === true) {
         console.log("data", data);
-        setAdminData(data?.data);
+        setsellerData(response?.data?.sellerList);
         setAllAdmin(data?.data);
       }
     } catch (error) {
@@ -295,7 +82,7 @@ const Seller = () => {
 
       const data = await response.data;
       if (data.success) {
-        fetchAdmin();
+        fetchSeller();
       }
     } catch (error) {
       console.error("Error updating admin status:", error);
@@ -306,7 +93,25 @@ const Seller = () => {
     navigate(`/editadmin/${id}`);
   };
 
-  const handleDeleteAdmin = async (id) => {
+  const deleteSeller = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won’t be able to revert this action!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("Deleting admin with id:", id);
+        handleDeleteSeller(id);
+        Swal.fire("Deleted!", "The admin has been deleted.", "success");
+      }
+    });
+  };
+
+  const handleDeleteSeller = async (id) => {
     try {
       const response = await axios.delete(`${apiurl}/admin/auth/delete/${id}`, {
         headers: {
@@ -319,7 +124,7 @@ const Seller = () => {
 
       if (data.success) {
         toast.success("Deleted Successfully");
-        fetchAdmin();
+        fetchSeller();
       }
     } catch (error) {
       console.error("Error updating filter:", error);
@@ -331,24 +136,24 @@ const Seller = () => {
     setSearchInput(trimmedValue);
 
     if (!trimmedValue) {
-      setAdminData(allAdmin);
+      setsellerData(allAdmin);
       return;
     }
 
     console.log("trimmed value", trimmedValue);
 
-    const updatedFilter = adminData.filter((item) =>
+    const updatedFilter = sellerData.filter((item) =>
       item?.username.toLowerCase().includes(trimmedValue.toLowerCase())
     );
 
-    setAdminData(updatedFilter);
+    setsellerData(updatedFilter);
   };
 
   return (
     <Layout>
       <Container>
         {loading == true ? (
-          <DynamicLoader maintext="wait" subtext="Fetching Admin Data" />
+          <DynamicLoader maintext="wait" subtext="Fetching Seller Data" />
         ) : null}
         <div className="flex flex-wrap justify-between w-full">
           <div className="flex flex-col  py-2 px-2 w-full">
@@ -364,7 +169,7 @@ const Seller = () => {
                   </button>
 
                   <Input.search
-                    placeholder="Search Your Admin"
+                    placeholder="Search Seller"
                     value={searchInput}
                     onChange={(e) => handleSearch(e.target.value)}
                   />
@@ -392,34 +197,35 @@ const Seller = () => {
                   </tr>
                 </thead>
                 <tbody className="text-sm text-gray-700">
-                  {adminData?.map((admin, index) => (
+                  {sellerData?.map((seller, index) => (
                     <tr
-                      key={admin?.id}
+                      key={seller?.id}
                       className="border-t relative overflow-hidden group hover:bg-gray-50 transition-all duration-500"
                     >
-                      {/* your actual row cells */}
-                      <td className="relative px-4 py-3">{index + 1}</td>
-                      <td className="relative px-4 py-3 capitalize">
-                        {admin?.username}
+                      <td className="relative px-6 py-3">{index + 1}</td>
+                      <td className="relative px-6 py-3 capitalize">
+                        {seller?.fullName}
                       </td>
-                      <td className="relative px-4 py-3">
-                        {admin?.businessName}
+                      <td className="relative px-6 py-3">
+                        {seller?.businessName}
                       </td>
-                      <td className="relative px-4 py-3">
-                        {admin?.businessAddress}
+                      <td className="relative px-6 py-3">
+                        {seller?.businessAddress}
                       </td>
-                      <td className="relative px-4 py-3">{admin?.phone}</td>
-                      <td className="relative px-4 py-3">{admin?.email}</td>
-                      <td className="relative px-4 py-3">{admin?.status}</td>
-                      <td className="relative">
+                      <td className="relative px-6 py-3">{seller?.phone}</td>
+                      <td className="relative px-6 py-3">{seller?.email}</td>
+                      <td className="relative px-6 py-3">
+                        {seller?.isActive === true ? "Active" : "InActive"}
+                      </td>
+                      <td className="relative px-4">
                         <span className="flex gap-1 cursor-pointer">
                           <CiEdit
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
-                            onClick={() => handleEditStatus(admin?.id)}
+                            onClick={() => handleEditStatus(seller?.id)}
                           />
                           <MdDeleteForever
                             className="p-1 text-2xl rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
-                            onClick={() => handleDeleteAdmin(admin?.id)}
+                            onClick={() => deleteSeller(seller?.id)}
                           />
                         </span>
                       </td>

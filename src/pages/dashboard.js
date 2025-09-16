@@ -70,7 +70,7 @@ const Dashboard = () => {
 
   // useEffect(() => {
   //   // Fetch user details from the API
-  //   //stage.myindiabazar.com:5050/
+  //   //stage.myindia.com:5050/
   //   // .get(`${apiurl}/api/dashboard/userDetails`, {
   //   UserHandler();
   // }, []);

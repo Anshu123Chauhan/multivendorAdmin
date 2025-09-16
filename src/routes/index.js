@@ -76,6 +76,7 @@ const Router = () => {
   const { userData, currentLocation, token } = useUser();
 
   const location = useLocation();
+  
   useEffect(() => {
     if (token && location.pathname === "/admin") {
       validateToken(token)

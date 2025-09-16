@@ -7,6 +7,8 @@ import { DynamicLoader } from "../components/loader";
 import { getCookie } from "../config/webStorage";
 import { useNavigate } from "react-router-dom";
 
+// no use
+
 const Vendors = () => {
   let navigate = useNavigate();
   const [loader, setLoader] = useState(false);

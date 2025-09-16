@@ -10,7 +10,6 @@ import BackHeader from "../components/backHeader";
 
 const AddSeller = () => {
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
     fullName: "",
@@ -19,9 +18,6 @@ const AddSeller = () => {
     phone: "",
     identityProof: "",
     identityProofNumber: "",
-    panCard: "",
-    aadhaar: "",
-    altId: "",
     gstNumber: "",
     accountHolder: "",
     ifscCode: "",
@@ -38,10 +34,33 @@ const AddSeller = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
+    if (files && files[0]) {
       setFormData((prev) => ({ ...prev, [name]: files[0] }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleFileUpload = async (file) => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "lakmesalon");
+    data.append("cloud_name", "dv5del8nh");
+
+    try {
+      let res = await fetch(
+        "https://api.cloudinary.com/v1_1/dv5del8nh/image/upload",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+      let result = await res.json();
+      console.log("Uploaded Image URL:", result.secure_url);
+      return result.secure_url;
+    } catch (error) {
+      console.error("Upload error:", error);
+      return null;
     }
   };
 
@@ -82,27 +101,32 @@ const AddSeller = () => {
 
     try {
       setLoading(true);
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] !== null && formData[key] !== "")
-          formDataToSend.append(key, formData[key]);
+      let proofUrl = "";
+      if (formData.AddProofImg) {
+        proofUrl = await handleFileUpload(formData.AddProofImg);
+        if (!proofUrl) {
+          toast.error("Failed to upload Address Proof. Try again!");
+          setLoading(false);
+          return;
+        }
+      }
+
+      const payload = {
+        ...formData,
+        AddProofImg: proofUrl,
+      };
+
+      const res = await axios.post(`${apiurl}/admin/seller-register`, payload, {
+        headers: {
+          Authorization: token,
+        },
       });
 
-      const res = await axios.post(
-        `${apiurl}/admin/auth/register`,
-        formDataToSend,
-        {
-          headers: {
-            Authorization: token,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      console.log("create seller------------>", res);
 
-      if (res.data.success && !res?.data?.data?.message) {
-        toast.success("New seller added successfully!");
+      if (res?.data?.success === true) {
+        toast.success(res?.data?.message);
         setFormData({
-          username: "",
           email: "",
           password: "",
           fullName: "",
@@ -112,7 +136,6 @@ const AddSeller = () => {
           identityProof: "",
           panCard: "",
           aadhaar: "",
-          altId: "",
           gstNumber: "",
           accountHolder: "",
           ifscCode: "",
@@ -135,7 +158,7 @@ const AddSeller = () => {
     <Layout>
       <div className="min-h-screen bg-gray-50 py-6 px-4">
         <BackHeader backButton={true} link="/sellerList" title="Back" />
-        <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow space-y-6 overflow-y-auto">
+        <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-xl space-y-6 overflow-y-auto">
           <h2 className="text-2xl font-bold text-center text-[#D4550B]">
             Create New Seller
           </h2>
@@ -178,7 +201,7 @@ const AddSeller = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <FloatingInput
                 label="Phone"
-                type="tel"
+                type="number"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
@@ -217,7 +240,7 @@ const AddSeller = () => {
 
               <FloatingInput
                 label={`Please enter ${formData.identityProof || "ID Number"}`}
-                type="number"
+                type="text"
                 name="identityProofNumber"
                 value={formData.identityProofNumber}
                 onChange={handleChange}
