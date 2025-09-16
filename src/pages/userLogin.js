@@ -6,8 +6,8 @@ import { BlinkLoader } from "../components/loader";
 import { setCookie } from "../config/webStorage.js";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { apiurl, logoUrl, loginSideImage } from "../config/config";
-import logo from "../assets/logo1.png";
-import LoginBanner from "../assets/login-banner.webp";
+import logo from "../assets/logo.png";
+import LoginBanner from "../assets/logo1.png";
 import { jwtDecode } from "jwt-decode";
 
 const UserLogin = () => {
@@ -51,11 +51,11 @@ const UserLogin = () => {
       <div className="flex w-11/12 md:w-8/12 h-[80%] flex-row-reverse bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="w-full md:w-1/2 p-8 flex flex-col justify-center items-center">
           <div className="w-full">
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center hidden">
               <img
                 src={logoUrl ? logoUrl : logo}
                 alt="Logo"
-                className="h-10 mb-6 text-center"
+                className="h-12 mb-6 text-center w-auto"
               />
             </div>
             <h2 className="text-2xl font-bold mb-4 text-gray-800 text-center">
@@ -103,7 +103,7 @@ const UserLogin = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-gold-gradient text-black py-3 h-12 relative rounded-md font-medium hover:bg-orange-600 transition flex items-center justify-center"
+                className="w-full bg-[#f7a420] text-black py-3 h-12 relative rounded-md font-medium hover:bg-orange-600 transition flex items-center justify-center"
                 disabled={loginloading}
               >
                 {loginloading ? <BlinkLoader /> : "Sign In"}
@@ -124,7 +124,7 @@ const UserLogin = () => {
             />
           ) : (
             <div className="flex justify-center items-center w-full">
-              <img src={LoginBanner} alt="LoginBanner" className="w-3/4" />
+              <img src={LoginBanner} alt="LoginBanner" className="w-3/4 rounded-[30px]" />
             </div>
           )}
 

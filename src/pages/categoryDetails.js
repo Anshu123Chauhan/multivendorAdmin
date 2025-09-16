@@ -82,37 +82,23 @@ function CategoryDetails() {
                 //   className="w-full  object-contain rounded-lg shadow-sm"
                 // />
                 <>
-                <p className="text-md text-center p-2 font-[600]">Men Image</p>
+                <p className="text-md text-center p-2 font-[600]">Category Image</p>
                 <Image
                   className="max-w-full max-h-full object-contain rounded-lg  shadow-sm"
                   src={
-                    categoryDetails?.menImage
+                    categoryDetails?.image
                   }
                   preview={{
                     maskClassName: "w-full",
                     getContainer: false,
                     src: `${
-                       categoryDetails?.menImage
+                       categoryDetails?.image
                       
                     }`,
                   }}
                 />
-                <p className="text-md text-center p-2 font-[600]">Women Image</p>
-
-                <Image
-                  className="max-w-full max-h-full object-contain rounded-lg  shadow-sm"
-                  src={
-                    categoryDetails?.womenImage
-                  }
-                  preview={{
-                    maskClassName: "w-full",
-                    getContainer: false,
-                    src: `${
-                       categoryDetails?.womenImage
-                      
-                    }`,
-                  }}
-                />
+               
+                
                 </>
               ) }
             </div>
