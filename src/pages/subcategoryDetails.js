@@ -58,17 +58,17 @@ function SubcategoryDetails() {
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Image Section */}
             <div className="lg:w-[40%]">
-              {categoryDetails?.menImage ? (
+              {categoryDetails?.image ? (
                 <>
-                <p className="text-md text-center p-2 font-[600]">Men Image</p>
+                <p className="text-md text-center p-2 font-[600]">Sub Category Image</p>
 
                 <Image
                   className="rounded-lg shadow-md max-h-96 object-contain"
-                  src={categoryDetails?.menImage}
+                  src={categoryDetails?.image}
                   preview={{
                     maskClassName: "w-full",
                     getContainer: false,
-                    src: categoryDetails?.menImage,
+                    src: categoryDetails?.image,
                   }}
                 />
                 </>
@@ -76,23 +76,7 @@ function SubcategoryDetails() {
                 <div className="text-gray-400 italic">No Image Available</div>
               )}
               
-              {categoryDetails?.womenImage ? (
-                <>
-                <p className="text-md text-center p-2 font-[600]">Women Image</p>
-
-                <Image
-                  className="rounded-lg shadow-md max-h-96 object-contain"
-                  src={categoryDetails?.womenImage}
-                  preview={{
-                    maskClassName: "w-full",
-                    getContainer: false,
-                    src: categoryDetails?.womenImage,
-                  }}
-                />
-                </>
-              ) : (
-                <div className="text-gray-400 italic">No Image Available</div>
-              )}
+              
             </div>
 
             {/* Details Section */}

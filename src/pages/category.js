@@ -38,11 +38,10 @@ const Category = () => {
   const fetchCategoryList = async () => {
     try {
       const response = await axios.get(
-        `${apiurl}/admin/category/getCategories`,
+        `${apiurl}/admin/category`,
         {
           headers: {
             Authorization: token,
-            "ngrok-skip-browser-warning": "69420"
           },
         }
       );
@@ -89,7 +88,7 @@ const Category = () => {
     try {
       setloading(true);
        await axios.delete(
-        `${apiurl}/admin/category/deleteCategory/${categoryId}`,
+        `${apiurl}/admin/category/${categoryId}`,
         {
           headers: {
             Authorization: token,
@@ -211,8 +210,7 @@ const Category = () => {
                       "SN.",
                       "Category Name",
                       "Description",
-                      "Men Image",
-                      "Women Image",
+                      "Image",
                       "action",
                     ].map((item, index) => (
                       <th key={index} scope="col" className="px-6 py-3">
@@ -239,29 +237,27 @@ const Category = () => {
                           </td>
 
                           <td className="px-6 py-4 text-center">
-                            <img src={category?.menImage} className="max-w-20 " />
+                            <img src={category?.image} className="max-w-20 " />
                           </td>
-                          <td className="px-6 py-4 text-center">
-                            <img src={category?.womenImage} className="max-w-20 " />
-                          </td>
+                          
                         
                           <td className="px-6 py-4">
                             <div className="flex text-2xl">
                               <AiOutlineEye
                                 className="p-1 rounded-md text-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200"
                                 onClick={() =>
-                                  navigate(`/categories/${category?.id}`)
+                                  navigate(`/categories/${category?._id}`)
                                 }
                               />
                               <CiEdit
                                 onClick={() =>
-                                  navigate(`/editCategory/${category?.id}`)
+                                  navigate(`/editCategory/${category?._id}`)
                                 }
                                 className="p-1 rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
                               />
                               <MdDeleteForever
                                 className="p-1 rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
-                                onClick={() => deleteCategory(category?.id)}
+                                onClick={() => deleteCategory(category?._id)}
                               />
                             </div>
                           </td>

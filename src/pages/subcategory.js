@@ -32,10 +32,9 @@ const Subsubcategory = () => {
   };
   const fetchCategoryList = async () => {
     try {
-      const response = await axios.get(`${apiurl}/admin/subcategory/getsubCategories`, {
+      const response = await axios.get(`${apiurl}/admin/category/sub`, {
         headers: {
           Authorization: token,
-          "ngrok-skip-browser-warning": "69420"
         },
       });
       console.log(response?.data)
@@ -76,7 +75,7 @@ const Subsubcategory = () => {
 
     try {
       setloading(true);
-      await axios.delete(`${apiurl}/admin/subcategory/deletesubCategory/${categoryId}`, {
+      await axios.delete(`${apiurl}/admin/category/sub/${categoryId}`, {
         headers: {
           Authorization: token,
         },
@@ -189,8 +188,7 @@ const Subsubcategory = () => {
                       "Category Name",
                       "Sub Category Name",
                       "Description",
-                      "Men Image",
-                      "Women Image",
+                      "Image",
                       // "Status",
                       "action"
                     ].map((item, index) => (
@@ -237,15 +235,10 @@ const Subsubcategory = () => {
                           <td
                             className="px-6 py-4 text-center"
                           >
-                            {subcategory?.menImage ? <img src={subcategory?.menImage} className="max-w-20" /> : "NA"}
+                            {subcategory?.image ? <img src={subcategory?.image} className="max-w-20" /> : "NA"}
 
                           </td>
-                          <td
-                            className="px-6 py-4 text-center"
-                          >
-                            {subcategory?.womenImage ? <img src={subcategory?.womenImage} className="max-w-20" /> : "NA"}
-
-                          </td>
+                          
                           {/* <td
                             className="px-6 py-4 text-center"
                           >
@@ -256,15 +249,15 @@ const Subsubcategory = () => {
                             <div className="flex text-2xl">
                               <AiOutlineEye
                                 className="p-1 rounded-md text-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200"
-                                onClick={() => navigate(`/subcategories/${subcategory?.id}`)}
+                                onClick={() => navigate(`/subcategories/${subcategory?._id}`)}
                               />
                               <CiEdit
-                                onClick={() => navigate(`/editSubCategory/${subcategory?.id}`)}
+                                onClick={() => navigate(`/editSubCategory/${subcategory?._id}`)}
                                 className="p-1 rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
                               />
                               <MdDeleteForever
                                 className="p-1 rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
-                                onClick={() => deletesubCategory(subcategory?.id)}
+                                onClick={() => deletesubCategory(subcategory?._id)}
                               />
                             </div>
                           </td>
