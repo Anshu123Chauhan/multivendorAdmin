@@ -31,13 +31,81 @@ const AddSeller = () => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+  // 🔹 Field-level validation
+  const validateField = (name, value) => {
+    let error = "";
+
+    switch (name) {
+      case "fullName":
+        if (!value.trim()) error = "Full name is required.";
+        break;
+      case "businessName":
+        if (!value.trim()) error = "Business name is required.";
+        break;
+      case "businessAddress":
+        if (!value.trim()) error = "Business address is required.";
+        break;
+      case "email":
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          error = "Invalid email address.";
+        }
+        break;
+      case "password":
+        if (value.length < 6) error = "Password must be at least 6 characters.";
+        break;
+      case "phone":
+        if (!/^[0-9]{10}$/.test(value))
+          error = "Phone number must be 10 digits.";
+        break;
+      case "gstNumber":
+        if (!value.trim()) error = "GST number is required.";
+        break;
+      case "accountHolder":
+        if (!value.trim()) error = "Account holder name is required.";
+        break;
+      case "ifscCode":
+        if (!value.trim()) error = "IFSC code is required.";
+        break;
+      case "bankAccount":
+        if (!value.trim()) error = "Bank account number is required.";
+        break;
+      case "identityProof":
+        if (!value) error = "Identity Proof is required.";
+        break;
+      case "identityProofNumber":
+        if (!value.trim()) error = "Identity Proof Number is required.";
+        break;
+      case "addressProof":
+        if (!value) error = "Address Proof Image is required.";
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prev) => ({ ...prev, [name]: error }));
+    return error;
+  };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (files && files[0]) {
       setFormData((prev) => ({ ...prev, [name]: files[0] }));
+      validateField(name, files[0]);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+      validateField(name, value);
     }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    Object.keys(formData).forEach((field) => {
+      const error = validateField(field, formData[field]);
+      if (error) newErrors[field] = error;
+    });
+    setErrors(newErrors);
+    return newErrors;
   };
 
   const handleFileUpload = async (file) => {
@@ -55,7 +123,6 @@ const AddSeller = () => {
         }
       );
       let result = await res.json();
-      console.log("Uploaded Image URL:", result.secure_url);
       return result.secure_url;
     } catch (error) {
       console.error("Upload error:", error);
@@ -63,41 +130,12 @@ const AddSeller = () => {
     }
   };
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.fullName) newErrors.fullName = "Full name is required.";
-    if (!formData.businessName)
-      newErrors.businessName = "Business name is required.";
-    if (!formData.businessAddress)
-      newErrors.businessAddress = "Business address is required.";
-    if (!formData.email.includes("@")) newErrors.email = "Invalid email.";
-    if (formData.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters.";
-    if (!formData.phone.match(/^[0-9]{10}$/))
-      newErrors.phone = "Phone number must be 10 digits.";
-    if (!formData.gstNumber) newErrors.gstNumber = "GST number is required.";
-    if (!formData.accountHolder)
-      newErrors.accountHolder = "Account holder name is required.";
-    if (!formData.ifscCode) newErrors.ifscCode = "IFSC code is required.";
-    if (!formData.addressProof)
-      newErrors.addressProof = "Address Proof Image is required";
-    if (!formData.identityProofNumber)
-      newErrors.identityProofNumber = "Identity Proof Number is required";
-    if (!formData.identityProof)
-      newErrors.identityProof = "Identity Proof is required";
-    if (!formData.bankAccount)
-      newErrors.bankAccount = "Bank account number is required.";
-    return newErrors;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length) {
-      setErrors(validationErrors);
       return;
     }
-
     try {
       setLoading(true);
       let proofUrl = "";
@@ -109,20 +147,15 @@ const AddSeller = () => {
           return;
         }
       }
-
       const payload = {
         ...formData,
         addressProof: proofUrl,
       };
-
       const res = await axios.post(`${apiurl}/admin/seller-register`, payload, {
         headers: {
           Authorization: token,
         },
       });
-
-      console.log("create seller------------>", res);
-
       if (res?.data?.success === true) {
         toast.success(res?.data?.message);
         setFormData({
@@ -133,20 +166,19 @@ const AddSeller = () => {
           businessAddress: "",
           phone: "",
           identityProof: "",
-          panCard: "",
-          aadhaar: "",
+          identityProofNumber: "",
           gstNumber: "",
           accountHolder: "",
           ifscCode: "",
           bankAccount: "",
-          addressProof: null,
+          addressProof: "",
         });
+        setErrors({});
       } else {
         toast.warning(res?.data?.data?.message);
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Something went wrong!");
     } finally {
       setLoading(false);
     }
@@ -157,7 +189,7 @@ const AddSeller = () => {
       <div className="min-h-screen bg-gray-50 py-6 px-4">
         <BackHeader backButton={true} link="/sellerList" title="Back" />
         <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-xl space-y-6 overflow-y-auto">
-          <h2 className="text-2xl font-bold text-center text-[#D4550B]">
+          <h2 className="text-2xl font-bold text-center text-blue-600">
             Create New Seller
           </h2>
 
@@ -199,12 +231,13 @@ const AddSeller = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <FloatingInput
                 label="Phone"
-                type="number"
+                type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
                 error={errors.phone}
                 required={true}
+                length={10}
               />
               <FloatingInput
                 label="Email"
@@ -237,7 +270,7 @@ const AddSeller = () => {
               />
 
               <FloatingInput
-                label={`Please enter ${formData.identityProof || "ID Number"}`}
+                label={`Please Enter ${formData.identityProof || "ID Number"}`}
                 type="text"
                 name="identityProofNumber"
                 value={formData.identityProofNumber}
@@ -319,7 +352,7 @@ const AddSeller = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#D4550B] text-white py-2 rounded-lg font-medium hover:bg-[#c3490a] transition"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-[#c3490a] transition"
             >
               {loading ? "Adding..." : "Add Seller"}
             </button>

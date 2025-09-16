@@ -8,6 +8,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { apiurl, logoUrl, loginSideImage } from "../config/config";
 import logo from "../assets/logo1.png";
 import LoginBanner from "../assets/login-banner.webp";
+import { jwtDecode } from "jwt-decode";
 
 const UserLogin = () => {
   const [password, setPassword] = useState("");
@@ -29,6 +30,8 @@ const UserLogin = () => {
       });
       if (response?.data?.success === true) {
         const loginToken = response?.data?.token;
+        const decodedToken = jwtDecode(loginToken);
+        console.log("decoded Token data ----------->>>>>", decodedToken);
         localStorage.setItem("accessToken", loginToken);
         setCookie("zrotoken", loginToken);
         // setCookie("zrotoken", 12345);
