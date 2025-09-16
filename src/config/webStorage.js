@@ -13,7 +13,8 @@ export const getCookie = (name) => {
   export const setCookie = (name, value, expirationTimeInSeconds) => {
     const expireDate = new Date();
     expireDate.setTime(expireDate.getTime() + expirationTimeInSeconds * 1000);
-    document.cookie = `${name}=${value};expires=${expireDate.toUTCString()};path=/`;
+    const tokenValue = value.startsWith("Bearer ") ? value : `Bearer ${value}`;
+    document.cookie = `${name}=${tokenValue};expires=${expireDate.toUTCString()};path=/`;
   };
   
   export const removeCookie = (name) => {

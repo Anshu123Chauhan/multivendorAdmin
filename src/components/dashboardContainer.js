@@ -35,17 +35,17 @@ const Layout = ({ children }) => {
         icon: <BiSolidDashboard />,
         location: "/",
       },
-  
+
       {
         title: "Stores",
         icon: <TbViewfinder />,
         location: "/admin/stores",
       },
-      // {
-      //   title: "View User",
-      //   icon: <FaUsersViewfinder />,
-      //   location: "/admin/viewuser",
-      // },
+      {
+        title: "View User",
+        icon: <FaUsersViewfinder />,
+        location: "/admin/viewuser",
+      },
       {
         title: "Analytics",
         icon: <IoAnalyticsOutline />,
@@ -99,8 +99,6 @@ const Layout = ({ children }) => {
         icon: <MdOutlineCelebration />,
         location: "/userprofile",
       },
-
-      
     ],
   };
 
@@ -121,11 +119,7 @@ const Layout = ({ children }) => {
           >
             <IoClose />
           </div>
-          <img
-            className="h-10"
-            src="/logo.png"
-            alt="logo"
-          />
+          <img className="h-10" src="/logo.png" alt="logo" />
           {/* </div> */}
           <div className="flex flex-col gap-1 items-center w-full">
             {user &&
@@ -133,7 +127,7 @@ const Layout = ({ children }) => {
                 return (
                   <NavLink
                     key={index}
-                    style={{ borderWidth: 1 }} //due to bootstrap won't able to change border color
+                    style={{ borderWidth: 1 }}
                     onClick={() => setIsMenuOpen(false)}
                     className={({ isActive }) => `
               px-2 py-2 rounded-lg w-full  flex items-center gap-1.5

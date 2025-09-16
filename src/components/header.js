@@ -3,7 +3,7 @@ import "./layout.css";
 import { useUser } from "../config/userProvider";
 import { IoHelp, IoPowerSharp, IoSettingsOutline } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { removeCookie,getCookie } from "../config/webStorage.js";
+import { removeCookie, getCookie } from "../config/webStorage.js";
 import { useNavigate, NavLink } from "react-router-dom";
 import Error from "../components/error";
 import moment from "moment";
@@ -15,24 +15,29 @@ import logo from "../assets/logo1.png";
 import { FaRegUserCircle } from "react-icons/fa";
 import { TbLockPassword } from "react-icons/tb";
 import { RiAdminFill } from "react-icons/ri";
-import {jwtDecode} from "jwt-decode"
+import { jwtDecode } from "jwt-decode";
 
 const Header = ({ className }) => {
-  const { token,openProfile, setCloseProfile, userData, isMenuOpen, setIsMenuOpen } =
-    useUser();
-    const [decodedToken, setDecodedToken] = useState(token);
-    useEffect(() => {
-      const localToken = token || getCookie("zrotoken");
-      if (localToken) {
-        try {
-          const decoded = jwtDecode(localToken);
-          setDecodedToken(decoded);
-        } catch (error) {
-        
-          console.error("Error decoding token:", error);
-        }
-      } 
-    }, [token]);
+  const {
+    token,
+    openProfile,
+    setCloseProfile,
+    userData,
+    isMenuOpen,
+    setIsMenuOpen,
+  } = useUser();
+  const [decodedToken, setDecodedToken] = useState(token);
+  useEffect(() => {
+    const localToken = token || getCookie("zrotoken");
+    if (localToken) {
+      try {
+        const decoded = jwtDecode(localToken);
+        setDecodedToken(decoded);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, [token]);
   const [openSearch, setOpenSearch] = useState(false);
 
   const navigate = useNavigate();
@@ -44,6 +49,7 @@ const Header = ({ className }) => {
   const [message, setMessage] = useState({ type: "", message: "" });
 
   const verificationDetails = userData?.verificationDetails;
+
   useEffect(() => {
     if (userData?.userType === "admin" || userData?.userType === "user") {
       if (userData?.storeDetails?.storeObjId) {
@@ -82,9 +88,7 @@ const Header = ({ className }) => {
   }, [userData]);
 
   const Verification =
-    ((userData?.userType === "admin" || userData?.userType === "user") &&
-      !userData?.storeDetails?.storeObjId) ||
-    (userData?.storeDetails?.storeObjId &&
+    ((userData?.userType === "admin" || userData?.userType === "user") && !userData?.storeDetails?.storeObjId) || (userData?.storeDetails?.storeObjId &&
       verificationDetails?.isEmailVerified);
 
   const FormattedDate = () => {
@@ -120,7 +124,6 @@ const Header = ({ className }) => {
       </div>
       {message?.type === "error" && <Error err={message?.message} />}
       <div className="flex items-center gap-2 lg:gap-4 relative">
-        
         {/* <button className="p-3 rounded-full text-sm md:text-xl relative">
           {decodedToken?.username}
         </button>  */}
@@ -129,13 +132,11 @@ const Header = ({ className }) => {
           className="flex justify-center items-center uppercase cursor-pointer "
           onClick={() => setCloseProfile(!openProfile)}
         >
-          <FaRegUserCircle className="lg:w-8 lg:h-8 w-8 h-8"/>
-
-         </div>
+          <FaRegUserCircle className="lg:w-8 lg:h-8 w-8 h-8" />
+        </div>
 
         {openProfile && (
           <div className="absolute  p-5 shadow-sm right-[-12px] top-[100%] bg-white/100 px-2 z-20 w-44 mt-3 rounded-md capitalize whitespace-pre">
-           
             <div
               className="text-red-500 flex items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
               onClick={() => {
@@ -154,7 +155,6 @@ const Header = ({ className }) => {
               <TbLockPassword />
               Update Password
             </div>
-
 
             <div
               className="text-red-500 flex items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded mb-2"

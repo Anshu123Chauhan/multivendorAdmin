@@ -17,33 +17,30 @@ const UserLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  console.log("apiurl", apiurl);
-
   const loginHandler = async (e) => {
     e.preventDefault();
     if (!email) return setError("Please enter email address");
     if (!password) return setError("Please enter password");
-    // try {
-    //   setloginloading(true);
-    //   const response = await axios.post(`${apiurl}/admin/auth/login`, {
-    //     email: email,
-    //     password,
-    //   });
-    //   console.log("login data-------------->", response);
-      // if (response.data.success === true) {
-      //   const loginToken = response.data?.data;
-        // localStorage.setItem("accessToken",loginToken)
-        // setCookie("zrotoken", loginToken);
-        setCookie("zrotoken", 12345);
+    try {
+      setloginloading(true);
+      const response = await axios.post(`${apiurl}/auth/login`, {
+        email: email,
+        password,
+      });
+      if (response?.data?.success === true) {
+        const loginToken = response?.data?.token;
+        localStorage.setItem("accessToken", loginToken);
+        setCookie("zrotoken", loginToken);
+        // setCookie("zrotoken", 12345);
         navigate("/dashboard");
-      // } else {
-      //   setError(response.data.message);
-      // }
-    // } catch (error) {
-    //   setError("Login failed. Please try again.");
-    // } finally {
-    //   setloginloading(false);
-    // }
+      } else {
+        setError(response.data.message);
+      }
+    } catch (error) {
+      setError("Login failed. Please try again.");
+    } finally {
+      setloginloading(false);
+    }
   };
 
   return (

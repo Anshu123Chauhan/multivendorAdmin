@@ -22,11 +22,6 @@ const ProtectedRoute = ({ element: Element, PermissionName }) => {
 
     // validateToken(token)
     //   .then((user) => {
-    //     console.log(
-    //       "TEST",
-    //       PermissionName,
-    //       user.user?.permissions[PermissionName]?.read
-    //     );
     //     if (
     //       user?.success === true &&
     //       user.user?.permissions[PermissionName]?.read
