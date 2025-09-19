@@ -65,3 +65,21 @@ export const subfetchCategoryDetail = async (id, currentPage, limit = 10) => {
     console.error("Error fetching store detail:", error);
   }
 };
+export const fetchBrandDetail = async (id, currentPage, limit = 10) => {
+  try {
+    const response = await axios.get(
+      // `${apiurl}/api/storeRoute/get_store_detail?page=${currentPage}&limit=${limit}`,
+      `${apiurl}/admin/brand/${id}`,
+      
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    
+    return response.data; // Log the response data
+  } catch (error) {
+    console.error("Error fetching store detail:", error);
+  }
+};

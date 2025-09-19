@@ -46,8 +46,8 @@ const UserList = () => {
         },
       });
       if (response.data.success === true) {
-        setuserData(response?.data?.userList);
-        setAllAdmin(response.data);
+        setuserData(response?.data?.user);
+        setAllAdmin(response?.data?.user);
       }
     } catch (error) {
       console.error("Error fetching filters:", error);
@@ -85,7 +85,7 @@ const UserList = () => {
   };
 
   const handleEditStatus = (id) => {
-    navigate(`/editadmin/${id}`);
+    navigate(`/editUser/${id}`);
   };
 
   const deleteuser = (id) => {
@@ -108,7 +108,7 @@ const UserList = () => {
 
   const handleDeleteuser = async (id) => {
     try {
-      const response = await axios.delete(`${apiurl}/admin/auth/delete/${id}`, {
+      const response = await axios.delete(`${apiurl}/admin/user-delete/${id}`, {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
@@ -155,7 +155,7 @@ const UserList = () => {
             <BackHeader
               title="users"
               rightSide={
-                <div className="flex gap-3 w-[600px]">
+                <div className="flex gap-3 w-[80%]">
                   <button
                     className="bg-[#000] hover:bg-[#e7c984] hover:text-[#000]  text-[#fff] w-[150px] p-2 rounded-md"
                     onClick={() => navigate("/addrole")}
@@ -168,6 +168,11 @@ const UserList = () => {
                   >
                     Add User
                   </button>
+                   
+                    <button className="bg-[#000] hover:bg-[#e7c984] hover:text-[#000]  text-[#fff] w-[150px] p-2 rounded-md"  onClick={() => navigate("/role")}>
+                      Roles list
+                    </button>
+                  
 
                   <Input.search
                     placeholder="Search user"
@@ -186,6 +191,7 @@ const UserList = () => {
                       "Name",
                       "Phone no.",
                       "Email",
+                      "Role Name",
                       "Status",
                       "Action",
                     ].map((item, index) => (
@@ -203,10 +209,11 @@ const UserList = () => {
                     >
                       <td className="relative px-6 py-3">{index + 1}</td>
                       <td className="relative px-6 py-3 capitalize">
-                        {user?.userName}
+                        {user?.username}
                       </td>
                       <td className="relative px-6 py-3">{user?.phone}</td>
                       <td className="relative px-6 py-3">{user?.email}</td>
+                      <td className="relative px-6 py-3">{user?.role_name}</td>
                       <td className="relative px-6 py-3">
                         {user?.isActive === true ? "Approved" : "Pending"}
                       </td>
@@ -214,11 +221,11 @@ const UserList = () => {
                         <span className="flex gap-1 cursor-pointer">
                           <CiEdit
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
-                            onClick={() => handleEditStatus(user?.id)}
+                            onClick={() => handleEditStatus(user?._id)}
                           />
                           <MdDeleteForever
                             className="p-1 text-2xl rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
-                            onClick={() => deleteuser(user?.id)}
+                            onClick={() => deleteuser(user?._id)}
                           />
                         </span>
                       </td>

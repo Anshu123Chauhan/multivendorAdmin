@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 const UserLogin = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [loginType, setLoginType] = useState("");
   const [error, setError] = useState("");
   const [loginloading, setloginloading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -22,10 +23,12 @@ const UserLogin = () => {
     e.preventDefault();
     if (!email) return setError("Please enter email address");
     if (!password) return setError("Please enter password");
+    if (!loginType) return setError("Please selct login type");
     try {
       setloginloading(true);
       const response = await axios.post(`${apiurl}/auth/login`, {
         email: email,
+        loginType:loginType,
         password,
       });
       if (response?.data?.success === true) {
@@ -100,6 +103,18 @@ const UserLogin = () => {
                 >
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </button>
+              </div>
+              <div>
+                <select name="loginType"  onChange={(e) => {
+                    setLoginType(e.target.value);
+                    setError("");
+                  }}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                  <option>Select Login Type</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Seller">Seller</option>
+                  <option value="User">User</option>
+                </select>
               </div>
               <button
                 type="submit"

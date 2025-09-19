@@ -13,12 +13,12 @@ import { MdDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { ToastContainer, toast } from "react-toastify";
 import { getCookie } from "../config/webStorage";
-const Category = () => {
+const Brand = () => {
   const { userData } = useUser();
     const token = getCookie("zrotoken");
   const [loading, setloading] = useState(false);
   const [editDetails, setEditDetails] = useState("");
-  const [categories, setCategories] = useState("");
+  const [brands, setBrands] = useState("");
   const [pagination, setPagination] = useState({});
   const [serachData, setserchData] = useState([]); // Filtered list
   const [isOpen, setIsOpen] = useState(false);
@@ -37,10 +37,10 @@ const Category = () => {
   };
   //fetch store list
 
-  const fetchCategoryList = async () => {
+  const fetchBrandList = async () => {
     try {
       const response = await axios.get(
-        `${apiurl}/admin/category`,
+        `${apiurl}/admin/brand`,
         {
           headers: {
             Authorization: token,
@@ -49,7 +49,7 @@ const Category = () => {
       );
       console.log(response?.data);
       if (response?.data.success === true) {
-        setCategories(response?.data?.data || []);
+        setBrands(response?.data?.data || []);
         setserchData(response?.data?.data || []);
       }
     } catch (error) {
@@ -58,7 +58,7 @@ const Category = () => {
     }
   };
   useEffect(() => {
-    fetchCategoryList();
+    fetchBrandList();
   }, []);
   const [searchInput, setSearchInput] = useState("");
   const handleSearch = (value) => {
@@ -66,12 +66,12 @@ const Category = () => {
 
     if (!value.trim()) {
       setCurrentPage(1);
-      setserchData(categories);
+      setserchData(brands);
       return;
     }
 
     // Filter store data based on store name (handle case sensitivity)
-    const filteredData = categories.filter(
+    const filteredData = brands.filter(
       (store) =>
         store?.name?.toLowerCase().includes(value.toLowerCase()) ||
         store?.storeName?.toLowerCase().includes(value.toLowerCase()) ||
@@ -83,27 +83,25 @@ const Category = () => {
     setserchData(filteredData);
   };
 
-  const deleteCategory = async (categoryId) => {
-    if (!window.confirm("Are you sure you want to delete this category?"))
+  const deleteBrand = async (brandId) => {
+    if (!window.confirm("Are you sure you want to delete this brand?"))
       return;
 
     try {
       setloading(true);
        await axios.delete(
-        `${apiurl}/admin/category/${categoryId}`,
+        `${apiurl}/admin/brand/${brandId}`,
         {
           headers: {
             Authorization: token,
           },
         }
       );
-        toast.success("Category deleted successfully")
-        fetchCategoryList();
-      // Filter out the deleted category from the UI
-      // setCategories(categories.filter((category) => category._id !== categoryId));
-      // setserchData(serachData.filter((category) => category._id !== categoryId));
+        toast.success("Brand deleted successfully")
+        fetchBrandList();
+
     } catch (error) {
-      console.error("Error deleting category:", error);
+      console.error("Error deleting brand:", error);
     } finally {
       setloading(false);
     }
@@ -126,7 +124,7 @@ const Category = () => {
     try {
       setUploading(true);
       const response = await axios.post(
-        `${apiurl}/admin/category/importCatgories`,
+        `${apiurl}/admin/brand/importBrand`,
         formData,
         {
           headers: {
@@ -137,8 +135,8 @@ const Category = () => {
         }
       );
       console.log("Upload Successful:", response.data);
-      toast.success(" Category imported successfully");
-      fetchCategoryList();
+      toast.success(" Brand imported successfully");
+      fetchBrandList();
       setIsOpen(false);
       setSelectedFile(null);
     } catch (error) {
@@ -154,12 +152,12 @@ const Category = () => {
     <Layout>
       <Container>
         {loading == true ? (
-          <DynamicLoader maintext="wait" subtext="Fetching Category Data" />
+          <DynamicLoader maintext="wait" subtext="Fetching Brand Data" />
         ) : null}
         <div className="flex flex-wrap justify-between w-full h-full  overflow-auto">
           <div className="flex flex-col  py-2 px-2 w-full">
             <BackHeader
-              title="Categories"
+              title="Brands"
               rightSide={
                 <div className="flex gap-3 w-[650px]">
                   {/* <button
@@ -169,14 +167,14 @@ const Category = () => {
                     Import Category
                   </button> */}
                  
-                  <Link to="/addcategory">
+                  <Link to="/addBrand">
                     <button className="bg-[#000] hover:bg-[#e7c984] hover:text-[#000] text-[#fff] w-[150px] p-2 rounded-md">
-                      Add Category
+                      Add Brand
                     </button>
                   </Link>
 
                   <Input.search
-                    placeholder="Search Category "
+                    placeholder="Search Brand "
                     value={searchInput}
                     onChange={(e) => handleSearch(e.target.value)}
                   />
@@ -184,33 +182,14 @@ const Category = () => {
               }
             />
 
-            {editDetails && (
-              <Card.AddPopUp removePopUp={() => setEditDetails("")}>
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold">Product Details</h2>
-                  <p>
-                    <strong>Product Name:</strong> {editDetails.productName}
-                  </p>
-                  <p>
-                    <strong>Color:</strong> {editDetails.color}
-                  </p>
-                  <p>
-                    <strong>Category:</strong> {editDetails.category}
-                  </p>
-                  <p>
-                    <strong>Price:</strong> ${editDetails.price}
-                  </p>
-                </div>
-              </Card.AddPopUp>
-            )}
-
+   
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                   <tr>
                     {[
                       "SN.",
-                      "Category Name",
+                      "Brand Name",
                       "Description",
                       "Image",
                       "action",
@@ -223,23 +202,23 @@ const Category = () => {
                 </thead>
                 <tbody>
                   {serachData &&
-                    serachData?.map((category, index) => {
+                    serachData?.map((brand, index) => {
                       return (
                         <tr
-                          key={category.id}
+                          key={brand.id}
                           className="bg-white border-b cursor-pointer"
                         >
                           <td className="px-4 py-4">{index + 1}</td>
 
                           <td className="px-6 py-4 text-center">
-                            {category?.name}
+                            {brand?.name}
                           </td>
                           <td className="px-6 py-4 text-center">
-                            {category?.description}
+                            {brand?.description}
                           </td>
 
                           <td className="px-6 py-4 text-center">
-                            <img src={category?.image} className="max-w-20 " />
+                            <img src={brand?.image} className="max-w-20 " />
                           </td>
                           
                         
@@ -248,18 +227,18 @@ const Category = () => {
                               <AiOutlineEye
                                 className="p-1 rounded-md text-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200"
                                 onClick={() =>
-                                  navigate(`/categories/${category?._id}`)
+                                  navigate(`/brand/${brand?._id}`)
                                 }
                               />
                               <CiEdit
                                 onClick={() =>
-                                  navigate(`/editCategory/${category?._id}`)
+                                  navigate(`/editBrand/${brand?._id}`)
                                 }
                                 className="p-1 rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
                               />
                               <MdDeleteForever
                                 className="p-1 rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
-                                onClick={() => deleteCategory(category?._id)}
+                                onClick={() => deleteBrand(brand?._id)}
                               />
                             </div>
                           </td>
@@ -346,4 +325,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Brand;

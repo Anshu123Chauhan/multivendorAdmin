@@ -16,8 +16,8 @@ import { getCookie } from "../config/webStorage";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
-const Seller = () => {
-  const [sellerData, setsellerData] = useState([]);
+const Product = () => {
+  const [productData, setproductData] = useState([]);
 
   const [allAdmin, setAllAdmin] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,21 +33,22 @@ const Seller = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchSeller();
+    fetchProduct();
   }, []);
 
-  const fetchSeller = async () => {
+  const fetchProduct = async () => {
     setloading(true);
     try {
-      const response = await axios.get(`${apiurl}/admin/seller-List`, {
+      const response = await axios.get(`${apiurl}/admin/product`, {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
       });
-      if (response.data.success === true) {
-        setsellerData(response?.data?.sellerList);
-        setAllAdmin(response?.data?.sellerList);
+      console.log(response)
+      if (response.status === 200) {
+        setproductData(response?.data?.data);
+        setAllAdmin(response?.data?.data);
       }
     } catch (error) {
       console.error("Error fetching filters:", error);
@@ -77,7 +78,7 @@ const Seller = () => {
 
       const data = await response.data;
       if (data.success) {
-        fetchSeller();
+        fetchProduct();
       }
     } catch (error) {
       console.error("Error updating admin status:", error);
@@ -85,10 +86,10 @@ const Seller = () => {
   };
 
   const handleEditStatus = (id) => {
-    navigate(`/editSeller/${id}`);
+    navigate(`/editProduct/${id}`);
   };
 
-  const deleteSeller = (id) => {
+  const deleteProduct = (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won’t be able to revert this action!",
@@ -100,15 +101,15 @@ const Seller = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log("Deleting admin with id:", id);
-        handleDeleteSeller(id);
+        handleDeleteProduct(id);
         Swal.fire("Deleted!", "The admin has been deleted.", "success");
       }
     });
   };
 
-  const handleDeleteSeller = async (id) => {
+  const handleDeleteProduct = async (id) => {
     try {
-      const response = await axios.delete(`${apiurl}/seller/delete/${id}`, {
+      const response = await axios.delete(`${apiurl}/admin/product/${id}`, {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
@@ -119,7 +120,7 @@ const Seller = () => {
 
       if (data.success) {
         toast.success("Deleted Successfully");
-        fetchSeller();
+        fetchProduct();
       }
     } catch (error) {
       console.error("Error updating filter:", error);
@@ -131,40 +132,40 @@ const Seller = () => {
     setSearchInput(trimmedValue);
 
     if (!trimmedValue) {
-      setsellerData(allAdmin);
+      setproductData(allAdmin);
       return;
     }
 
     console.log("trimmed value", trimmedValue);
 
-    const updatedFilter = sellerData.filter((item) =>
+    const updatedFilter = productData.filter((item) =>
       item?.fullName?.toLowerCase().includes(trimmedValue.toLowerCase())
     );
 
-    setsellerData(updatedFilter);
+    setproductData(updatedFilter);
   };
 
   return (
     <Layout>
       <Container>
         {loading == true ? (
-          <DynamicLoader maintext="wait" subtext="Fetching Seller Data" />
+          <DynamicLoader maintext="wait" subtext="Fetching Product Data" />
         ) : null}
         <div className="flex flex-wrap justify-between w-full">
           <div className="flex flex-col  py-2 px-2 w-full">
             <BackHeader
-              title="Sellers"
+              title="Products"
               rightSide={
                 <div className="flex gap-3 w-[500px]">
                   <button
                     className="bg-[#000] hover:bg-[#e7c984] hover:text-[#000]  text-[#fff] w-[150px] p-2 rounded-md"
-                    onClick={() => navigate("/addseller")}
+                    onClick={() => navigate("/addProduct")}
                   >
-                    Add Seller
+                    Add Product
                   </button>
 
                   <Input.search
-                    placeholder="Search Seller"
+                    placeholder="Search Product"
                     value={searchInput}
                     onChange={(e) => handleSearch(e.target.value)}
                   />
@@ -177,11 +178,12 @@ const Seller = () => {
                   <tr>
                     {[
                       "SN.",
+                      "Image",
                       "Name",
-                      "Business Name",
-                      "Business Address",
-                      "Phone no.",
-                      "Email",
+                      "Category",
+                      "SubCategory",
+                      "Selling Price",  
+                      "MRP",          
                       "Status",
                       "Action",
                     ].map((item, index) => (
@@ -192,35 +194,38 @@ const Seller = () => {
                   </tr>
                 </thead>
                 <tbody className="text-sm text-gray-700">
-                  {sellerData?.map((seller, index) => (
+                  {productData?.map((product, index) => (
                     <tr
-                      key={seller?.id}
+                      key={product?._id}
                       className="border-t relative overflow-hidden group hover:bg-gray-50 transition-all duration-500"
                     >
                       <td className="relative px-6 py-3">{index + 1}</td>
+                        <td className="relative px-6 py-3 capitalize">
+                        <img src={product?.images[0]} className="w-20 h-20"/>
+                      </td>
                       <td className="relative px-6 py-3 capitalize">
-                        {seller?.fullName}
+                        {product?.name}
                       </td>
                       <td className="relative px-6 py-3">
-                        {seller?.businessName}
+                        {product?.category}
                       </td>
                       <td className="relative px-6 py-3">
-                        {seller?.businessAddress}
+                        {product?.subCategory}
                       </td>
-                      <td className="relative px-6 py-3">{seller?.phone}</td>
-                      <td className="relative px-6 py-3">{seller?.email}</td>
+                      <td className="relative px-6 py-3">{product?.sellingPrice}</td>
+                      <td className="relative px-6 py-3">{product?.mrp}</td>
                       <td className="relative px-6 py-3">
-                        {seller?.isActive === true ? "Approved" : "Pending"}
+                        {product?.isActive === true ? "Approved" : "Pending"}
                       </td>
                       <td className="relative px-4">
                         <span className="flex gap-1 cursor-pointer">
                           <CiEdit
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
-                            onClick={() => handleEditStatus(seller?._id)}
+                            onClick={() => handleEditStatus(product?._id)}
                           />
                           <MdDeleteForever
                             className="p-1 text-2xl rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
-                            onClick={() => deleteSeller(seller?._id)}
+                            onClick={() => deleteProduct(product?._id)}
                           />
                         </span>
                       </td>
@@ -236,4 +241,4 @@ const Seller = () => {
   );
 };
 
-export default Seller;
+export default Product;
