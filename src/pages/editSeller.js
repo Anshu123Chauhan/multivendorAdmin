@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { apiurl } from "../config/config";
@@ -7,11 +7,13 @@ import Layout from "../components/layout";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FloatingInput } from "../components/floatingInput";
 import BackHeader from "../components/backHeader";
+import { useNavigate, useParams } from "react-router-dom";
 
-const AddSeller = () => {
+const EditSeller = () => {
+  const { id } = useParams();
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
     fullName: "",
     businessName: "",
     businessAddress: "",
@@ -26,12 +28,31 @@ const AddSeller = () => {
     commission:"",
     isActive:""
   });
+    useEffect(() => {
+      const fetchSeller= async () => {
+        try {
+          const res = await axios.get(`${apiurl}/seller/get/${id}`, {
+            headers: { Authorization: token},
+          });
+          console.log(res)
+          if (res.status === 200) {
+            setFormData(res.data.seller);
+          }
+        } catch (error) {
+          console.error("Error fetching seller:", error);
+          toast.error("Failed to fetch seller details");
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      if (id) fetchSeller();
+    }, [id]);
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const token = getCookie("zrotoken");
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
 
   // 🔹 Field-level validation
   const validateField = (name, value) => {
@@ -52,9 +73,7 @@ const AddSeller = () => {
           error = "Invalid email address.";
         }
         break;
-      case "password":
-        if (value.length < 6) error = "Password must be at least 6 characters.";
-        break;
+     
       case "phone":
         if (!/^[0-9]{10}$/.test(value))
           error = "Phone number must be 10 digits.";
@@ -153,30 +172,31 @@ const AddSeller = () => {
         ...formData,
         addressProof: proofUrl,
       };
-      const res = await axios.post(`${apiurl}/admin/seller-register`, payload, {
+      const res = await axios.put(`${apiurl}/seller/update/${id}`, payload, {
         headers: {
           Authorization: token,
         },
       });
       if (res?.data?.success === true) {
         toast.success(res?.data?.message);
-        setFormData({
-          email: "",
-          password: "",
-          fullName: "",
-          businessName: "",
-          businessAddress: "",
-          phone: "",
-          identityProof: "",
-          identityProofNumber: "",
-          gstNumber: "",
-          accountHolder: "",
-          ifscCode: "",
-          bankAccount: "",
-          addressProof: "",
-          commission:"",
-          isActive:""
-        });
+        // setFormData({
+        //   email: "",
+        //   fullName: "",
+        //   businessName: "",
+        //   businessAddress: "",
+        //   phone: "",
+        //   identityProof: "",
+        //   identityProofNumber: "",
+        //   gstNumber: "",
+        //   accountHolder: "",
+        //   ifscCode: "",
+        //   bankAccount: "",
+        //   addressProof: "",
+        //   commission:"",
+        //   isActive:""
+        // });
+        navigate("/sellerList")
+      
         setErrors({});
       } else {
         toast.warning(res?.data?.data?.message);
@@ -194,7 +214,7 @@ const AddSeller = () => {
         <BackHeader backButton={true} link="/sellerList" title="Back" />
         <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-xl space-y-6 overflow-y-auto">
           <h2 className="text-2xl font-bold text-center text-blue-600">
-            Create New Seller
+            Edit Seller
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -325,32 +345,8 @@ const AddSeller = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="relative">
-                <FloatingInput
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  error={errors.password}
-                  required={true}
-                />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-3 text-gray-500"
-                >
-                  {showPassword ? <FiEye /> : <FiEyeOff />}
-                </button>
-              </div>
-              <FloatingInput
-                label="Upload Address Proof Image"
-                type="file"
-                name="addressProof"
-                onChange={handleChange}
-                error={errors.addressProof}
-                required={true}
-              />
+              
+              
                <FloatingInput
                 label="Commission in %"
                 type="text"
@@ -377,7 +373,17 @@ const AddSeller = () => {
                   { value: false, label: "Inactive" },
                 ]}
               />
+              
             </div>
+            <FloatingInput
+                label="Upload Address Proof Image"
+                type="file"
+                name="addressProof"
+                onChange={handleChange}
+                error={errors.addressProof}
+                required={true}
+              />
+              <img src={formData.addressProof} className="w-10 h-10"></img>
             </div>
 
             <button
@@ -385,7 +391,7 @@ const AddSeller = () => {
               disabled={loading}
               className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-[#c3490a] transition"
             >
-              {loading ? "Adding..." : "Add Seller"}
+              {loading ? "Updating..." : "Update Seller"}
             </button>
           </form>
         </div>
@@ -394,4 +400,4 @@ const AddSeller = () => {
   );
 };
 
-export default AddSeller;
+export default EditSeller;

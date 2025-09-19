@@ -15,8 +15,10 @@ import { AiOutlineEye } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { ToastContainer, toast } from "react-toastify";
+import { getCookie } from "../config/webStorage";
 const Subsubcategory = () => {
-  const { userData, token } = useUser();
+  const { userData } = useUser();
+  const token = getCookie("zrotoken");
   const [loading, setloading] = useState(false)
   const [editDetails, setEditDetails] = useState("");
   const [subcategories, setSubcategories] = useState("");
@@ -32,7 +34,7 @@ const Subsubcategory = () => {
   };
   const fetchCategoryList = async () => {
     try {
-      const response = await axios.get(`${apiurl}/admin/category/sub`, {
+      const response = await axios.get(`${apiurl}/admin/category/sub/list`, {
         headers: {
           Authorization: token,
         },
@@ -83,7 +85,7 @@ const Subsubcategory = () => {
 
       // Filter out the deleted category from the UI
       toast.success("Subcategory deleted successfully")
-      setSubcategories(subcategories.filter((category) => category.id !== categoryId));
+      setSubcategories(subcategories.filter((category) => category._id !== categoryId));
       setserchData(serachData.filter((category) => category.id !== categoryId));
     } catch (error) {
       console.error("Error deleting category:", error);

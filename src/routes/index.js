@@ -74,6 +74,17 @@ import Seller from "../pages/seller.js";
 import AddSeller from "../pages/addSeller.js";
 import AddUser from "../pages/addUser.js";
 import AddRole from "../pages/addRole.js";
+import BrandDetails from "../pages/brandDetails.js";
+import Brand from "../pages/brand.js"
+import Addbrand from "../pages/addbrand.js"
+import Editbrand from "../pages/editbrand.js"
+import Role from "../pages/role.js";
+import EditUser from "../pages/editUser.js";
+import EditSeller from "../pages/editSeller.js";
+import AddProduct from "../pages/addProduct.js";
+import Product from "../pages/product.js"
+import EditProduct from "../pages/editProduct.js";
+
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
 
@@ -106,12 +117,8 @@ const Router = () => {
       <Route path="/update_password" element={<ChangePassword />} />
       <Route path="/addseller" element={<AddSeller />} />
       <Route path="/sellerList" element={<Seller />} />
-      <Route
-        path="/userlist"
-        element={<PrivateRoute element={<Userlist />} />}
-      />
-      <Route path="/addUser" element={<PrivateRoute element={<AddUser />} />} />
-      <Route path="/addrole" element={<PrivateRoute element={<AddRole />} />} />
+      
+      
       <Route
         path="/addbanner"
         element={<PrivateRoute element={<AddBanner />} />}
@@ -413,6 +420,39 @@ const Router = () => {
         path="/editServices/:serviceId/"
         element={<PrivateRoute element={<EditServices />} />}
       />
+
+       <Route
+        path="/brand"
+        element={<PrivateRoute element={<Brand />} />}
+      />
+      <Route
+        path="/addBrand"
+        element={<PrivateRoute element={<Addbrand />} />}
+      />
+      <Route
+        path="/brand/:id"
+        element={<PrivateRoute element={<BrandDetails />} />}
+      />
+      <Route
+        path="/editBrand/:brandId"
+        element={<PrivateRoute element={<Editbrand />} />}
+      />
+
+      <Route
+        path="/role"
+        element={<PrivateRoute element={<Role />} />}
+      />
+      <Route path="/addrole" element={<PrivateRoute element={<AddRole />} />} />
+      <Route
+        path="/userlist"
+        element={<PrivateRoute element={<Userlist />} />}
+      />
+      <Route path="/addUser" element={<PrivateRoute element={<AddUser />} />} />
+      <Route path="/editUser/:id" element={<PrivateRoute element={<EditUser />} />} />
+      <Route path="/editSeller/:id" element={<PrivateRoute element={<EditSeller />} />} />
+      <Route path="/addProduct" element={<PrivateRoute element={<AddProduct />} />} />
+      <Route path="/product" element={<PrivateRoute element={<Product />} />} />
+      <Route path="/editProduct/:id" element={<PrivateRoute element={<EditProduct />} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

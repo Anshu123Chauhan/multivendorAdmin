@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout, { Container } from "../components/layout";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { getCookie } from "../config/webStorage";
 import { apiurl } from "../config/config";
@@ -9,29 +9,46 @@ import BackHeader from "../components/backHeader";
 import { FloatingInput } from "../components/floatingInput";
 import { message, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import aws from "aws-sdk";
-import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from "react-toastify";
 
-const Addsubcategory = () => {
+const Editbrand = () => {
   const token = getCookie("zrotoken");
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [savingLoading, setSavingLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const { brandId } = useParams();
+  // console.log(brandId)
 
-  // Single state object for all form data
+  const [loading, setLoading] = useState(true);
+  const [savingLoading, setSavingLoading] = useState(false);
+   const [uploading, setUploading] = useState(false);
+
   const [formData, setFormData] = useState({
-    category: "",
     name: "",
     description: "",
     image: "",
     status: true,
-    meta: "",
   });
   const [errors, setErrors] = useState({});
 
-  const [categorydata, setCategoryData] = useState([]);
+  useEffect(() => {
+    const fetchBrand = async () => {
+      try {
+        const res = await axios.get(`${apiurl}/admin/brand/${brandId}`, {
+          headers: { Authorization: token},
+        });
+        console.log(res)
+        if (res.status === 200) {
+          setFormData(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching brand:", error);
+        toast.error("Failed to fetch brand details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (brandId) fetchBrand();
+  }, [brandId, token]);
 
   const handleChange = async (e) => {
     const { name, value, files } = e.target;
@@ -53,7 +70,7 @@ const Addsubcategory = () => {
     }
     setFormData((prev) => ({
       ...prev,
-      meta: formData.name,
+      "meta":formData.name,
       [name]: value,
     }));
     setErrors((prevErrors) => {
@@ -68,12 +85,12 @@ const Addsubcategory = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name) newErrors.name = "Sub Category Name is required.";
-    if (!formData.category) newErrors.name = "Category Selection is required.";
+    if (!formData.name) newErrors.name = "Brand Name is required.";
     if (!formData.description)
       newErrors.description = "Description is required.";
-    if (!formData.image) newErrors.image = "Category Image is required.";
-    return newErrors;
+     if (!formData.image)
+      newErrors.image = "Brand Image is required.";
+     return newErrors; 
   };
 
   const handleFileUpload = async (file) => {
@@ -98,28 +115,8 @@ const Addsubcategory = () => {
     }
   };
 
-  //fetch category list
-  const fetchCategoryList = async () => {
-    try {
-      const response = await axios.get(`${apiurl}/admin/category`, {
-        headers: {
-          Authorization: token,
-        },
-      });
-      // console.log(response?.data);
-      if (response?.data?.data?.length > 0) {
-        setCategoryData(response?.data?.data || []);
-      }
-    } catch (error) {
-      console.error("Error fetching store list:", error);
-    } finally {
-    }
-  };
-  useEffect(() => {
-    fetchCategoryList();
-  }, []);
-  // Create Category
-  const createCategory = async () => {
+
+  const updateBrand = async () => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length) {
       setErrors(validationErrors);
@@ -127,63 +124,42 @@ const Addsubcategory = () => {
     }
     try {
       setSavingLoading(true);
-      const res = await axios.post(`${apiurl}/admin/category/sub`, formData, {
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-      });
-      // console.log("res", res);
-      if (res.data.success === true) {
-        setSavingLoading(false);
-        toast("Subcategory Created Successfully");
-        navigate("/subcategory");
-      }
+      const res = await axios.put(
+        `${apiurl}/admin/brand/${brandId}`,
+        formData,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast(res.data.message)
+      // if (res.status === 200) {
+        //toast.success("Category Updated Successfully");
+        navigate("/brand");
+      //}
     } catch (err) {
-      if (err.response && err.response.status === 409) {
-        setSavingLoading(false);
-        toast.warn(err.response.data.message);
-      } else {
-        setSavingLoading(false);
-        // console.error(`Error creating Subcategory: ${err.message}`);
-        toast.error("Something went wrong");
-      }
+      console.error(`Error updating brand: ${err.message}`);
+      toast.error("Failed to update brand");
+    } finally {
+      setSavingLoading(false);
     }
   };
 
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 py-6 px-4">
-        <BackHeader
-          backButton={true}
-          link="/subcategory"
-          title="Sub Category"
-        />
+        <BackHeader backButton={true} link="/brand" title="Brand" />
 
         <div className="p-6 min-h-screen">
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-md shadow-md">
             <h2 className="text-2xl font-bold text-center text-[#D4550B]">
-              Create New Sub Category
+              Update Brand
             </h2>
             <div className="grid md:grid-cols-1 gap-6 mt-5">
               <FloatingInput
-                label="Select Category"
-                type="select"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                error={errors.category}
-                required={true}
-                options={[
-                  { value: "", label: "" },
-                  ...categorydata.map((item) => ({
-                    value: item._id,
-                    label: item.name,
-                  })),
-                ]}
-              />
-              <FloatingInput
-                label="Sub Category Name"
+                label="Brand Name"
                 type="text"
                 name="name"
                 value={formData.name}
@@ -201,33 +177,32 @@ const Addsubcategory = () => {
                 error={errors.description}
                 required={true}
               />
-                <FloatingInput
-              label="Upload Image"
-              type="file"
-              name="image"
-              onChange={handleChange}
-              error={errors.image}
-              required={true}
-            />
-
-            {uploading ? (
-              <small className="text-blue-500">Uploading...</small>
-            ) : formData.image ? (
-              <img
-                src={formData.image}
-                alt="Uploaded"
-                className="w-48 object-cover rounded mt-2"
+              <FloatingInput
+                label="Upload Image"
+                type="file"
+                name="image"
+                onChange={handleChange}
+                error={errors.image}
+                required={true}
               />
-            ) : null}
+
+              {uploading ? (
+                <small className="text-blue-500">Uploading...</small>
+              ) : formData.image ? (
+                <img
+                  src={formData.image}
+                  alt="Uploaded"
+                  className="w-48 object-cover rounded mt-2"
+                />
+              ) : null}
             </div>
-          
 
             <div className="text-right">
               <Button
                 className="bg-gray-800 hover:bg-zinc-950 hover:text-white mt-3 font-bold py-2 px-5 rounded"
                 type="primary"
                 loading={savingLoading}
-                onClick={createCategory}
+                onClick={updateBrand}
                 icon={savingLoading ? <LoadingOutlined /> : null}
               >
                 {savingLoading ? "Saving..." : "Save"}
@@ -240,4 +215,4 @@ const Addsubcategory = () => {
   );
 };
 
-export default Addsubcategory;
+export default Editbrand;

@@ -7,12 +7,13 @@ import Layout from "../components/layout";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FloatingInput } from "../components/floatingInput";
 import BackHeader from "../components/backHeader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const AddUser = () => {
+const EditUser = () => {
+   const { id } = useParams();
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
+    // password: "",
     username: "",
     phone: "",
     role_id: "",
@@ -27,7 +28,7 @@ const AddUser = () => {
   const [roleData,setRoleData]=useState([])
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-    const fetchRoleList = async () => {
+  const fetchRoleList = async () => {
     try {
       const response = await axios.get(`${apiurl}/admin/role-permission`, {
         headers: {
@@ -43,9 +44,29 @@ const AddUser = () => {
     } finally {
     }
   };
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`${apiurl}/admin/user-get/${id}`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(response?.data?.user);
+      if (response?.data?.success) {
+        setFormData(response?.data?.user || []);
+      }
+    } catch (error) {
+      console.error("Error fetching store list:", error);
+    } finally {
+    }
+  };
   useEffect(() => {
     fetchRoleList();
+    fetchUserData();
   }, []);
+  useEffect(() => {
+    fetchUserData();
+  }, [id]);
 
   // Field-level validation
   const validateField = (name, value) => {
@@ -103,7 +124,7 @@ const AddUser = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${apiurl}/admin/user-register`, formData, {
+      const res = await axios.put(`${apiurl}/admin/user-update/${id}`, formData, {
         headers: {
           Authorization: token,
         },
@@ -112,7 +133,7 @@ const AddUser = () => {
         toast.success(res?.data?.message);
         setFormData({
           email: "",
-          password: "",
+          // password: "",
           username: "",
           phone: "",
           role_id: "",
@@ -136,11 +157,12 @@ const AddUser = () => {
         <BackHeader backButton={true} link="/userList" title="Back" />
         <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-xl space-y-6 overflow-y-auto">
           <h2 className="text-2xl font-bold text-center text-[#D4550B]">
-            Create New User
+            Edit User
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-5">
             <div className="grid md:grid-cols-2 gap-6">
+            
               <FloatingInput
                 label="Full Name"
                 type="text"
@@ -188,7 +210,7 @@ const AddUser = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="relative">
+              {/* <div className="relative">
                 <FloatingInput
                   label="Password"
                   type={showPassword ? "text" : "password"}
@@ -205,7 +227,7 @@ const AddUser = () => {
                 >
                   {showPassword ? <FiEye /> : <FiEyeOff />}
                 </button>
-              </div>
+              </div> */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Status <span className="text-red-500">*</span>
@@ -223,7 +245,6 @@ const AddUser = () => {
                       className="text-[#D4550B] focus:ring-[#D4550B] border"
                     />
                     Active
-
                   </label>
                   <label className="flex items-center gap-2">
                     <input
@@ -236,8 +257,6 @@ const AddUser = () => {
                       }
                       className="text-[#D4550B] focus:ring-[#D4550B] border"
                     />
-                  
-
                     Inactive
                   </label>
                 </div>
@@ -247,15 +266,16 @@ const AddUser = () => {
             <button
               type="submit"
               disabled={loading}
+              onClick={handleSubmit}
               className="w-full bg-[#D4550B] text-white py-2 rounded-lg font-medium hover:bg-[#c3490a] transition"
             >
-              {loading ? "Adding..." : "Add User"}
+              {loading ? "Updating..." : "Update User"}
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </Layout>
   );
 };
 
-export default AddUser;
+export default EditUser;

@@ -4,6 +4,7 @@ export const FloatingInput = ({
   name,
   value,
   onChange,
+  radio,
   error,
   options = [],
   required = false,
@@ -30,7 +31,27 @@ export const FloatingInput = ({
             </option>
           ))}
         </select>
-      ) : type === "file" ? (
+      ) : type === "radio" ? (
+       <div>
+          
+          <div className="flex gap-6">
+            {options.map((opt, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name={name}
+                  value={opt.value}
+                  checked={value === opt.value}
+                  onChange={() => onChange({ target: { name, value: opt.value } })}
+                  className="text-[#D4550B] focus:ring-[#D4550B] border"
+                />
+                <span className="text-gray-700">{opt.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      ) :type === "file" ? (
         <input
           type="file"
           name={name}

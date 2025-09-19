@@ -20,7 +20,7 @@ const EditSubcategory = () => {
   const [uploading, setUploading] = useState(false);
 
   const [formData, setFormData] = useState({
-    categoryId: "",
+    category: "",
     name: "",
     description: "",
     image: "",
@@ -119,7 +119,17 @@ const EditSubcategory = () => {
 
         }
       );
-      setFormData(response.data.data);
+       const data = response.data.data;
+
+    if (!data.isDeleted) {
+      setFormData({
+        ...data,
+        category: data.category?._id || "",
+      });
+    } else {
+      toast.warn("This subcategory is deleted and cannot be selected");
+      setFormData({}); // or keep previous state
+    }
     } catch (error) {
       toast.error("Error fetching subcategory");
     } finally {
@@ -175,15 +185,15 @@ const EditSubcategory = () => {
               <FloatingInput
                 label="Select Category"
                 type="select"
-                name="categoryId"
-                value={formData.categoryId}
+                name="category"
+                value={formData.category}
                 onChange={handleChange}
-                error={errors.categoryId}
+                error={errors.category}
                 required={true}
                 options={[
                   { value: "", label: "" },
                   ...categorydata.map((item) => ({
-                    value: item.id,
+                    value: item._id,
                     label: item.name,
                   })),
                 ]}
