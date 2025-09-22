@@ -14,7 +14,7 @@ import { headerTitle, headerLogoUrl } from "./config/config";
 function App() {
   const { showInternetStatus } = useUser();
   const [pageTitle, setPageTitle] = useState(
-    headerTitle ? headerTitle : "Lakme Digital Menu"
+    headerTitle ? headerTitle : "ENS Marketplace"
   );
 
   useEffect(() => {

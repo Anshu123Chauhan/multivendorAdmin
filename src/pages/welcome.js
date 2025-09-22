@@ -10,7 +10,7 @@ const Welcome = () => {
           Welcome to the{" "}
           <span className=" text-orange-600">
             {" "}
-            Lakme Salon Digital Menu Dashboard
+            ENS Marketplace Dashboard
           </span>
         </div>
         <Link to="/">

@@ -87,46 +87,51 @@ const EditProduct = () => {
     return newErrors;
   };
     useEffect(() => {
-      const fetchProduct = async () => {
-        try {
-          const res = await axios.get(`${apiurl}/admin/product/${id}`, {
-            headers: { Authorization: token},
-          });
-          console.log(res)
-          if (res.status === 200) {
-            const product = res.data;
+      
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`${apiurl}/admin/product/${id}`, {
+          headers: { Authorization: token },
+        });
+        if (res.status === 200) {
+          const product = res.data;
 
-            // build attributes dynamically from existing variants
-            let extractedAttributes = {};
-            if (product.variants && product.variants.length > 0) {
-              product.variants.forEach((variant) => {
-                Object.entries(variant.attributes).forEach(([key, value]) => {
-                  if (!extractedAttributes[key]) extractedAttributes[key] = [];
-                  if (!extractedAttributes[key].includes(value)) {
-                    extractedAttributes[key].push(value);
-                  }
-                });
+          let extractedAttributes = {};
+          if (product.variants && product.variants.length > 0) {
+            product.variants.forEach((variant) => {
+              Object.entries(variant.attributes).forEach(([key, value]) => {
+                if (!extractedAttributes[key]) extractedAttributes[key] = [];
+                if (!extractedAttributes[key].includes(value)) {
+                  extractedAttributes[key].push(value);
+                }
               });
-            }
-
-            setFormData({
-              ...product,
-              productType: product?.variants?.length > 0 ? "variable" : "single",
-              attributes: extractedAttributes,   // ✅ pre-fill attributes
-              variants: product.variants || [], // ✅ keep existing variants
             });
-            }
+          }
 
-        } catch (error) {
-          console.error("Error fetching brand:", error);
-          toast.error("Failed to fetch brand details");
-        } finally {
-          setLoading(false);
+          setFormData({
+            ...product,
+            category: product?.category?._id || "",
+            subCategory: product?.subCategory?._id || "",
+            brand: product?.brand?._id || "",
+            productType: product?.variants?.length > 0 ? "variable" : "single",
+            attributes: extractedAttributes,
+            variants: product.variants || [],
+          });
+
+          // ✅ make sure subcategories are filtered after product load
+          fetchsubCategoryList(product?.category?._id, product?.subCategory?._id);
         }
-      };
-  
-      if (id) fetchProduct();
-    }, [id, token]);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        toast.error("Failed to fetch product details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  if (id) fetchProduct();
+}, [id, token]);
+
   // ------------ Handlers ------------
   const handleChange = async (e) => {
     const { name, value, files } = e.target;
@@ -175,23 +180,34 @@ const EditProduct = () => {
       }
   };
 
-  const fetchsubCategoryList = async () => {
-    try {
-      const response = await axios.get(`${apiurl}/admin/category/sub/list`, {
-        headers: {
-          Authorization: token,
-        },
-      });
-      console.log(response?.data)
-      if (response?.data?.data?.length > 0) {
-        setSubcategories(response?.data?.data || []);
-      }
-    } catch (error) {
-      console.error("Error fetching store list:", error);
-    } finally {
+const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
+  try {
+    const response = await axios.get(`${apiurl}/admin/category/sub/list`, {
+      headers: { Authorization: token },
+    });
+    if (response?.data?.data?.length > 0) {
+      setSubcategories(response.data.data);
 
+      // filter by category if passed
+      if (catid) {
+        const filtered = response.data.data.filter(
+          (sub) => sub.category._id === catid
+        );
+        setFilteredSubcategories(filtered);
+
+        // ✅ keep the selected subcategory
+        setFormData((prev) => ({
+          ...prev,
+          category: catid,
+          subCategory: selectedSub || prev.subCategory,
+        }));
+      }
     }
+  } catch (error) {
+    console.error("Error fetching subcategories:", error);
   }
+};
+
   const fetchBrandList = async () => {
       try {
         const response = await axios.get(
@@ -212,6 +228,8 @@ const EditProduct = () => {
       } finally {
       }
   };
+
+  
   const handleCategoryChange = (e) => {
   const { value } = e.target;
 
@@ -370,6 +388,7 @@ const EditProduct = () => {
       images: formData.images, // ⚠️ should be uploaded URLs in real API
       sellingPrice: formData.sellingPrice,
       mrp: formData.mrp,
+      sku:formData.sku,
       inventory: formData.inventory,
       productType: formData.productType,
       // tags: formData?.tags ? formData?.tags?.split(",").map((t) => t.trim()) : [],
@@ -389,7 +408,7 @@ const EditProduct = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`${apiurl}/admin/product`, payload, {
+      const response = await axios.put(`${apiurl}/admin/product/${id}`, payload, {
         headers: { Authorization: token },
       });
       toast.success("Product created successfully!");
@@ -713,7 +732,7 @@ const EditProduct = () => {
               onClick={handleSubmit} 
               className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
             >
-              {loading ? "Adding..." : "Add Product"}
+              {loading ? "Updating..." : "Update Product"}
             </button>
           
         </div>

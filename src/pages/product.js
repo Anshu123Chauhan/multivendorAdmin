@@ -118,8 +118,8 @@ const Product = () => {
 
       const data = await response.data;
 
-      if (data.success) {
-        toast.success("Deleted Successfully");
+      if (response.status===200) {
+        // toast.success("Deleted Successfully");
         fetchProduct();
       }
     } catch (error) {
@@ -206,11 +206,11 @@ const Product = () => {
                       <td className="relative px-6 py-3 capitalize">
                         {product?.name}
                       </td>
-                      <td className="relative px-6 py-3">
-                        {product?.category}
+                      <td className="relative px-6 py-3 capitalize">
+                        {product?.category?.name}
                       </td>
-                      <td className="relative px-6 py-3">
-                        {product?.subCategory}
+                      <td className="relative px-6 py-3 capitalize">
+                        {product?.subCategory?.name|| "N/A"}
                       </td>
                       <td className="relative px-6 py-3">{product?.sellingPrice}</td>
                       <td className="relative px-6 py-3">{product?.mrp}</td>

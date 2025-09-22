@@ -48,6 +48,8 @@ const decodedToken = useMemo(() => {
       { title: "Category", icon: <MdOutlineCategory />, location: "/category", permission: "catgory" },
       { title: "Sub Category", icon: <BiCategoryAlt />, location: "/subcategory", permission: "subcatgory" },
       { title: "Brand", icon: <MdOutlineCategory />, location: "/brand", permission: "brand" },
+      { title: "Attribute", icon: <MdOutlineCategory />, location: "/attribute", permission: "attribute" },
+
       { title: "Product", icon: <RiServiceLine />, location: "/product" },
 
       { title: "Services", icon: <RiServiceLine />, location: "/service" },
