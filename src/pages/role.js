@@ -12,8 +12,10 @@ import { AiOutlineEye } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { ToastContainer, toast } from "react-toastify";
+import { getCookie } from "../config/webStorage";
 const Role = () => {
-  const { userData, token } = useUser();
+  const { userData } = useUser();
+  const token = getCookie("zrotoken");
   const [loading, setloading] = useState(false);
   const [editDetails, setEditDetails] = useState("");
   const [roles, setRoles] = useState("");
@@ -71,9 +73,7 @@ const Role = () => {
     // Filter store data based on store name (handle case sensitivity)
     const filteredData = roles.filter(
       (store) =>
-        store?.name?.toLowerCase().includes(value.toLowerCase()) ||
-        store?.storeName?.toLowerCase().includes(value.toLowerCase()) ||
-        store?.description?.toLowerCase().includes(value.toLowerCase())
+        store?.role_name?.toLowerCase().includes(value.toLowerCase())
     );
     console.log(filteredData);
 
@@ -88,7 +88,7 @@ const Role = () => {
     try {
       setloading(true);
        await axios.delete(
-        `${apiurl}/admin/role/${roleId}`,
+        `${apiurl}/admin/role-permission/${roleId}`,
         {
           headers: {
             Authorization: token,
@@ -219,12 +219,12 @@ const Role = () => {
                         
                           <td className="px-6 py-4">
                             <div className="flex text-2xl">
-                              <AiOutlineEye
+                              {/* <AiOutlineEye
                                 className="p-1 rounded-md text-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200"
                                 onClick={() =>
                                   navigate(`/roles/${role?._id}`)
                                 }
-                              />
+                              /> */}
                               <CiEdit
                                 onClick={() =>
                                   navigate(`/editRole/${role?._id}`)

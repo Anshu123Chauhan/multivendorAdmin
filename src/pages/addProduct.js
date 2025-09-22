@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { apiurl } from "../config/config";
@@ -9,7 +9,7 @@ import BackHeader from "../components/backHeader";
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     brand: "",
@@ -31,11 +31,16 @@ const AddProduct = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [imgloading, setimgLoading] = useState(false);
   const [newAttr, setNewAttr] = useState("");
   const [subcategories, setSubcategories] = useState([]);
   const [categorydata, setCategoryData] = useState([]);
   const [brands, setBrands] = useState([]);
   const [filteredSubcategories, setFilteredSubcategories] = useState([]);
+  const [adminAttributes, setAdminAttributes] = useState([]);
+  const [attributeInputs, setAttributeInputs] = useState({});
+  const [selectedValues, setSelectedValues] = useState([]);
+  const [selectedAttrId, setSelectedAttrId] = useState("");
   const token = getCookie("zrotoken");
   const validateField = (name, value) => {
     let error = "";
@@ -48,27 +53,28 @@ const AddProduct = () => {
         if (!value.trim()) error = "Category is required.";
         break;
       case "description":
-      if (!value.trim()) error = "Description is required.";
-      break;
+        if (!value.trim()) error = "Description is required.";
+        break;
       case "mrp":
         if (!value.trim()) error = "MRP is required.";
         break;
       case "sellingPrice":
-       if (!value.trim()) error = "Selling Price is required.";
+        if (!value.trim()) error = "Selling Price is required.";
         break;
-     case "productType":
-       if (!value.trim()) error = "Product Type is required.";
+      case "productType":
+        if (!value.trim()) error = "Product Type is required.";
         break;
       case "sku":
         if (!value.trim()) error = "SKU is required.";
         break;
       case "images":
-        if (!value) error = "Product Image is required.";
+        if (!value || (Array.isArray(value) && value.length === 0))
+          error = "Product Image is required.";
         break;
       case "inventory":
         if (!value) error = "Inventory is required.";
         break;
-      
+
       default:
         break;
     }
@@ -121,16 +127,16 @@ const AddProduct = () => {
     });
   };
   const fetchCategoryList = async () => {
-      try {
-        const response = await axios.get(`${apiurl}/admin/category`, {
-          headers: { Authorization: token,},
-        });
-        if (response?.data?.data?.length > 0) {
-          setCategoryData(response.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
+    try {
+      const response = await axios.get(`${apiurl}/admin/category`, {
+        headers: { Authorization: token },
+      });
+      if (response?.data?.data?.length > 0) {
+        setCategoryData(response.data.data);
       }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
   };
 
   const fetchsubCategoryList = async () => {
@@ -140,57 +146,51 @@ const AddProduct = () => {
           Authorization: token,
         },
       });
-      console.log(response?.data)
+      console.log(response?.data);
       if (response?.data?.data?.length > 0) {
         setSubcategories(response?.data?.data || []);
       }
     } catch (error) {
       console.error("Error fetching store list:", error);
     } finally {
-
     }
-  }
+  };
   const fetchBrandList = async () => {
-      try {
-        const response = await axios.get(
-          `${apiurl}/admin/brand`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        console.log(response?.data);
-        if (response?.data.success === true) {
-          setBrands(response?.data?.data || []);
-          
-        }
-      } catch (error) {
-        console.error("Error fetching store list:", error);
-      } finally {
+    try {
+      const response = await axios.get(`${apiurl}/admin/brand`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(response?.data);
+      if (response?.data.success === true) {
+        setBrands(response?.data?.data || []);
       }
+    } catch (error) {
+      console.error("Error fetching store list:", error);
+    } finally {
+    }
   };
   const handleCategoryChange = (e) => {
-  const { value } = e.target;
+    const { value } = e.target;
 
-  setFormData((prev) => ({
-    ...prev,
-    category: value,
-    subCategory: "", // reset subCategory
-  }));
+    setFormData((prev) => ({
+      ...prev,
+      category: value,
+      subCategory: "", // reset subCategory
+    }));
 
-  // filter subcategories belonging to this category
-  const filtered = subcategories.filter(
-    (sub) => sub.category._id === value
-  );
-  setFilteredSubcategories(filtered);
-};
+    // filter subcategories belonging to this category
+    const filtered = subcategories.filter((sub) => sub.category._id === value);
+    setFilteredSubcategories(filtered);
+  };
   useEffect(() => {
     fetchCategoryList();
     fetchsubCategoryList();
     fetchBrandList();
-  }, [])
+  }, []);
   const handleFileUpload = async (file) => {
+    setimgLoading(true);
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "lakmesalon");
@@ -204,6 +204,7 @@ const AddProduct = () => {
           body: data,
         }
       );
+      setimgLoading(false);
       let result = await res.json();
       return result.secure_url;
     } catch (error) {
@@ -212,19 +213,22 @@ const AddProduct = () => {
     }
   };
   const handleVariantImagesChange = async (idx, files) => {
-  const uploadedUrls = await Promise.all(
-    Array.from(files).map((file) => handleFileUpload(file))
-  );
+    const uploadedUrls = await Promise.all(
+      Array.from(files).map((file) => handleFileUpload(file))
+    );
 
-  setFormData((prev) => {
-    const updated = [...prev.variants];
-    updated[idx] = {
-      ...updated[idx],
-      images: [...(updated[idx].images || []), ...uploadedUrls.filter(Boolean)],
-    };
-    return { ...prev, variants: updated };
-  });
-};
+    setFormData((prev) => {
+      const updated = [...prev.variants];
+      updated[idx] = {
+        ...updated[idx],
+        images: [
+          ...(updated[idx].images || []),
+          ...uploadedUrls.filter(Boolean),
+        ],
+      };
+      return { ...prev, variants: updated };
+    });
+  };
 
   const handleVariantChange = (idx, field, value) => {
     setFormData((prev) => {
@@ -234,26 +238,16 @@ const AddProduct = () => {
     });
   };
 
-  const handleVariantImages = (idx, files) => {
-    setFormData((prev) => {
-      const updated = [...prev.variants];
-      updated[idx] = {
-        ...updated[idx],
-        images: [
-          ...(updated[idx].images || []),
-          ...Array.from(files).map((f) => URL.createObjectURL(f)),
-        ],
-      };
-      return { ...prev, variants: updated };
-    });
-  };
+  const handleAttributeChange = (attrName, value) => {
+    // keep raw text so typing works
+    setAttributeInputs((prev) => ({ ...prev, [attrName]: value }));
 
-  const handleAttributeChange = (attrName, values) => {
+    // also update formData with array
     setFormData((prev) => ({
       ...prev,
       attributes: {
         ...prev.attributes,
-        [attrName]: values
+        [attrName]: value
           .split(",")
           .map((v) => v.trim())
           .filter((v) => v !== ""),
@@ -261,16 +255,34 @@ const AddProduct = () => {
     }));
   };
 
-  const addAttribute = () => {
-    if (!newAttr.trim()) return;
-    setFormData((prev) => ({
-      ...prev,
-      attributes: {
-        ...prev.attributes,
-        [newAttr.trim()]: [],
-      },
-    }));
-    setNewAttr("");
+  const addAttribute = (selectedAttrId) => {
+    // Case 1: selected from dropdown
+    if (selectedAttrId) {
+      const existing = adminAttributes.find((a) => a._id === selectedAttrId);
+      if (existing) {
+        setFormData((prev) => ({
+          ...prev,
+          attributes: {
+            ...prev.attributes,
+            [existing.name]: existing.values.map((v) => v.value), // preload existing values
+          },
+        }));
+      }
+      setSelectedAttrId("");
+      return;
+    }
+
+    // Case 2: custom attribute typed
+    if (newAttr.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        attributes: {
+          ...prev.attributes,
+          [newAttr.trim()]: [],
+        },
+      }));
+      setNewAttr("");
+    }
   };
 
   const generateVariants = () => {
@@ -313,7 +325,7 @@ const AddProduct = () => {
   };
 
   const handleSubmit = async (e) => {
-    console.log(formData)
+    console.log(formData);
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length) {
@@ -326,6 +338,7 @@ const AddProduct = () => {
       subCategory: formData.subCategory,
       brand: formData.brand,
       images: formData.images, // ⚠️ should be uploaded URLs in real API
+      sku: formData.sku,
       sellingPrice: formData.sellingPrice,
       mrp: formData.mrp,
       inventory: formData.inventory,
@@ -371,7 +384,7 @@ const AddProduct = () => {
         variants: [],
         usertype: "",
       });
-      navigate("/product")
+      navigate("/product");
     } catch (error) {
       console.error("Error creating product:", error);
       toast.error("Failed to create product");
@@ -379,6 +392,23 @@ const AddProduct = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchAdminAttributes = async () => {
+      try {
+        const res = await axios.get(`${apiurl}/admin/attribute`, {
+          headers: { Authorization: token },
+        });
+        if (res?.data?.success) {
+          setAdminAttributes(res.data.data); // e.g. [{name:"Color", values:["Red","Blue"]}]
+        }
+      } catch (err) {
+        console.error("Error fetching attributes", err);
+      }
+    };
+
+    fetchAdminAttributes();
+  }, [token]);
 
   return (
     <Layout>
@@ -389,136 +419,136 @@ const AddProduct = () => {
             Create New Product
           </h2>
 
-         
-            <div className="grid md:grid-cols-2 gap-6">
-              <FloatingInput
-                label="Product Name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                error={errors.name}
-                required
-              />
-              <FloatingInput
-                label="SKU"
-                type="text"
-                name="sku"
-                value={formData.sku}
-                onChange={handleChange}
-                error={errors.sku}
-                required={true}
-              />
-              <FloatingInput
-                label="Select Category"
-                type="select"
-                name="category"
-                value={formData.category}
-                onChange={handleCategoryChange}   // ✅ use new handler
-                error={errors.category}
-                required={true}
-                options={[
-                  { value: "", label: "" },
-                  ...categorydata.map((item) => ({
-                    value: item._id,
-                    label: item.name,
-                  })),
-                ]}
-              />
-
-              <FloatingInput
-                label="Select Sub Category"
-                type="select"
-                name="subCategory"
-                value={formData.subCategory}
-                onChange={handleChange}
-                error={errors.subCategory}
-                // required={true}
-                options={[
-                  { value: "", label: "" },
-                  ...filteredSubcategories.map((item) => ({
-                    value: item._id,
-                    label: item.name,
-                  })),
-                ]}
-              />
-
-                 <FloatingInput
-                  label="Select Brand"
-                  type="select"
-                  name="brand"
-                  value={formData.brand}
-                  onChange={handleChange}
-                  error={errors.brand}
-                  // required={true}
-                  options={[
-                    { value: "", label: "" },
-                    ...brands.map((item) => ({
-                      value: item._id,
-                      label: item.name,
-                    })),
-                  ]}
-                />
-                 <FloatingInput
-                  label="Product Type"
-                  type="select"
-                  name="productType"
-                  value={formData.productType}
-                 onChange={handleChange}
-                  error={errors.productType}
-                  required={true}
-                   options={[
-                  { value: "", label: "" },
-                  { value: "single", label: "Single" },
-                  { value: "variable", label: "Variable" },
-                   ]}
-                />
-                
-            </div>
-
+          <div className="grid md:grid-cols-2 gap-6">
             <FloatingInput
-              label="Description"
-              type="textarea"
-              name="description"
-              value={formData.description}
+              label="Product Name"
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              error={errors.description}
+              error={errors.name}
               required
             />
+            <FloatingInput
+              label="SKU"
+              type="text"
+              name="sku"
+              value={formData.sku}
+              onChange={handleChange}
+              error={errors.sku}
+              required={true}
+            />
+            <FloatingInput
+              label="Select Category"
+              type="select"
+              name="category"
+              value={formData.category}
+              onChange={handleCategoryChange} // ✅ use new handler
+              error={errors.category}
+              required={true}
+              options={[
+                { value: "", label: "" },
+                ...categorydata.map((item) => ({
+                  value: item._id,
+                  label: item.name,
+                })),
+              ]}
+            />
 
-            {/* Product Images */}
-            
-            {/* Pricing */}
-            <div className="grid md:grid-cols-3 gap-6">
-              <FloatingInput
-                label="MRP"
-                type="number"
-                name="mrp"
-                value={formData.mrp}
-                onChange={handleChange}
-                error={errors.mrp}
-                required
-              />
-              <FloatingInput
-                label="Selling Price"
-                type="number"
-                name="sellingPrice"
-                value={formData.sellingPrice}
-                onChange={handleChange}
-                error={errors.sellingPrice}
-                required
-              />
-              <FloatingInput
-                label="Inventory"
-                type="number"
-                name="inventory"
-                value={formData.inventory}
-                onChange={handleChange}
-                error={errors.inventory}
-                required
-              />
-              <div>
-              <label className="block mb-2 font-medium">Product Images<span className="text-red-500 ml-1">*</span></label>
+            <FloatingInput
+              label="Select Sub Category"
+              type="select"
+              name="subCategory"
+              value={formData.subCategory}
+              onChange={handleChange}
+              error={errors.subCategory}
+              // required={true}
+              options={[
+                { value: "", label: "" },
+                ...filteredSubcategories.map((item) => ({
+                  value: item._id,
+                  label: item.name,
+                })),
+              ]}
+            />
+
+            <FloatingInput
+              label="Select Brand"
+              type="select"
+              name="brand"
+              value={formData.brand}
+              onChange={handleChange}
+              error={errors.brand}
+              // required={true}
+              options={[
+                { value: "", label: "" },
+                ...brands.map((item) => ({
+                  value: item._id,
+                  label: item.name,
+                })),
+              ]}
+            />
+            <FloatingInput
+              label="Product Type"
+              type="select"
+              name="productType"
+              value={formData.productType}
+              onChange={handleChange}
+              error={errors.productType}
+              required={true}
+              options={[
+                { value: "", label: "" },
+                { value: "single", label: "Single" },
+                { value: "variable", label: "Variable" },
+              ]}
+            />
+          </div>
+
+          <FloatingInput
+            label="Description"
+            type="textarea"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            error={errors.description}
+            required
+          />
+
+          {/* Product Images */}
+
+          {/* Pricing */}
+          <div className="grid md:grid-cols-3 gap-6">
+            <FloatingInput
+              label="MRP"
+              type="number"
+              name="mrp"
+              value={formData.mrp}
+              onChange={handleChange}
+              error={errors.mrp}
+              required
+            />
+            <FloatingInput
+              label="Selling Price"
+              type="number"
+              name="sellingPrice"
+              value={formData.sellingPrice}
+              onChange={handleChange}
+              error={errors.sellingPrice}
+              required
+            />
+            <FloatingInput
+              label="Inventory"
+              type="number"
+              name="inventory"
+              value={formData.inventory}
+              onChange={handleChange}
+              error={errors.inventory}
+              required
+            />
+            <div>
+              <label className="block mb-2 font-medium">
+                Product Images<span className="text-red-500 ml-1">*</span>
+              </label>
               <FloatingInput
                 label="Upload Products Image"
                 type="file"
@@ -528,150 +558,198 @@ const AddProduct = () => {
                 error={errors.images}
                 required={true}
               />
-             
+
               <div className="flex gap-2 mt-2 flex-wrap">
-                {formData.images.map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt="preview"
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                ))}
-              </div>
-            </div>
-
-            </div>
-
-            {/* Only show Variants if variable */}
-            {formData.productType === "variable" && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Product Attributes</h3>
-
-                {/* Add Attribute */}
-                <div className="flex items-center gap-2">
-                  <FloatingInput
-                    label="New Attribute (e.g. Color, Size)"
-                    type="text"
-                    value={newAttr}
-                    onChange={(e) => setNewAttr(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="px-3 py-2 bg-green-600 text-white rounded"
-                    onClick={addAttribute}
-                  >
-                    Add
-                  </button>
-                </div>
-
-                {/* Attribute Inputs */}
-                {Object.keys(formData.attributes).map((attrName, idx) => (
-                  <textarea
-                    key={idx}
-                    placeholder={`Enter ${attrName} values (comma separated)`}
-                    // value={formData.attributes[attrName].join(",")}
-                    onChange={(e) =>
-                      handleAttributeChange(attrName, e.target.value)
-                    }
-                    className="w-full border rounded p-2"
-                  />
-                ))}
-
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-blue-600 text-white rounded"
-                  onClick={generateVariants}
-                >
-                  Generate Variants
-                </button>
-
-                {/* Variants */}
-                {formData.variants.length > 0 && (
-                  <>
-                    <h3 className="text-lg font-semibold mt-6">Variants</h3>
-                    {formData.variants.map((variant, idx) => (
-                      <div key={idx} className="border p-4 rounded space-y-4">
-                        <h4 className="font-medium">
-                          Variant {idx + 1} -{" "}
-                          {Object.entries(variant.attributes)
-                            .map(([k, v]) => `${k}: ${v}`)
-                            .join(", ")}
-                        </h4>
-
-                        <div className="grid md:grid-cols-3 gap-6">
-                          <FloatingInput
-                            label="SKU"
-                            type="text"
-                            value={variant.sku}
-                            onChange={(e) =>
-                              handleVariantChange(idx, "sku", e.target.value)
-                            }
-                          />
-                          <FloatingInput
-                            label="Price"
-                            type="number"
-                            value={variant.price}
-                            onChange={(e) =>
-                              handleVariantChange(idx, "price", e.target.value)
-                            }
-                          />
-                          <FloatingInput
-                            label="MRP"
-                            type="number"
-                            value={variant.mrp}
-                            onChange={(e) =>
-                              handleVariantChange(idx, "mrp", e.target.value)
-                            }
-                          />
-                          <FloatingInput
-                            label="Stock"
-                            type="number"
-                            value={variant.stock}
-                            onChange={(e) =>
-                              handleVariantChange(idx, "stock", e.target.value)
-                            }
-                          />
-                        </div>
-
-                        {/* Variant Images */}
-                        <div>
-                          <label className="block mb-2 font-medium">
-                            Variant Images
-                          </label>
-                          <input
-                            type="file"
-                            multiple
-                            onChange={(e) => handleVariantImagesChange(idx, e.target.files)}
-                          />
-
-                          <div className="flex gap-2 mt-2 flex-wrap">
-                            {variant.images.map((img, i) => (
-                              <img
-                                key={i}
-                                src={img}
-                                alt="preview"
-                                className="w-16 h-16 object-cover rounded"
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </>
+                {imgloading ? (
+                  <span className="text-[#1d9f00]">Loading....</span>
+                ) : (
+                  formData.images.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt="preview"
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                  ))
                 )}
               </div>
-            )}
+            </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              onClick={handleSubmit} 
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-            >
-              {loading ? "Adding..." : "Add Product"}
-            </button>
-          
+          {/* Only show Variants if variable */}
+          {formData.productType === "variable" && (
+            <div className="space-y-4 border border-[#d1d5db] rounded-[10px] p-3">
+              {/* <h3 className="text-lg font-semibold">Product Attributes</h3> */}
+
+              {/* Add Attribute */}
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* Existing attributes dropdown */}
+
+                <FloatingInput
+                  label="Select Attribute"
+                  type="select"
+                  name="attribute"
+                  value={selectedAttrId}
+                  onChange={(e) => {setSelectedAttrId(e.target.value);addAttribute(e.target.value)}}
+                  error={errors.category}
+                  required={true}
+                  options={[
+                    { value: "", label: "" },
+                    ...adminAttributes.map((item) => ({
+                      value: item._id,
+                      label: item.name,
+                    })),
+                  ]}
+                />
+
+                {/* OR enter new attribute */}
+                {/* <FloatingInput
+    label="Or enter new attribute"
+    type="text"
+    value={newAttr}
+    onChange={(e) => setNewAttr(e.target.value)}
+  /> */}
+
+                {/* <button
+                  type="button"
+                  className="px-3 py-2 bg-green-600 text-white rounded"
+                  onClick={addAttribute}
+                >
+                  Add
+                </button> */}
+              </div>
+
+              {/* Attribute Inputs */}
+              {Object.keys(formData.attributes).map((attrName, idx) => {
+                const existing = adminAttributes.find(
+                  (a) => a.name === attrName
+                );
+
+                return (
+                  <div key={idx}>
+                    <label className="block font-medium">{attrName}</label>
+
+                    <textarea
+                      placeholder={`Enter ${attrName} values (comma separated)`}
+                      value={
+                        attributeInputs[attrName] ??
+                        formData.attributes[attrName].join(", ")
+                      }
+                      onChange={(e) =>
+                        handleAttributeChange(attrName, e.target.value)
+                      }
+                      className="w-full border rounded p-2"
+                    />
+
+                    {existing && existing.values.length > 0 && (
+                      <p className="text-sm text-gray-500">
+                        Existing values:{" "}
+                        {existing.values.map((v) => v.value).join(", ")}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+
+              <button
+                type="button"
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+                onClick={generateVariants}
+              >
+                Generate Variants
+              </button>
+
+              {/* Variants */}
+              {formData.variants.length > 0 && (
+                <>
+                  <h3 className="text-lg font-semibold mt-6">Variants</h3>
+                  {formData.variants.map((variant, idx) => (
+                    <div key={idx} className="border p-4 rounded space-y-4">
+                      <h4 className="font-medium">
+                        Variant {idx + 1} -{" "}
+                        {Object.entries(variant.attributes)
+                          .map(([k, v]) => `${k}: ${v}`)
+                          .join(", ")}
+                      </h4>
+
+                      <div className="grid md:grid-cols-3 gap-6">
+                        <FloatingInput
+                          label="SKU"
+                          type="text"
+                          value={variant.sku}
+                          onChange={(e) =>
+                            handleVariantChange(idx, "sku", e.target.value)
+                          }
+                        />
+                        <FloatingInput
+                          label="Price"
+                          type="number"
+                          value={variant.price}
+                          onChange={(e) =>
+                            handleVariantChange(idx, "price", e.target.value)
+                          }
+                        />
+                        <FloatingInput
+                          label="MRP"
+                          type="number"
+                          value={variant.mrp}
+                          onChange={(e) =>
+                            handleVariantChange(idx, "mrp", e.target.value)
+                          }
+                        />
+                        <FloatingInput
+                          label="Stock"
+                          type="number"
+                          value={variant.stock}
+                          onChange={(e) =>
+                            handleVariantChange(idx, "stock", e.target.value)
+                          }
+                        />
+                      </div>
+
+                      {/* Variant Images */}
+                      <div>
+                        <label className="block mb-2 font-medium">
+                          Variant Images
+                        </label>
+                        <input
+                          type="file"
+                          multiple
+                          onChange={(e) =>
+                            handleVariantImagesChange(idx, e.target.files)
+                          }
+                        />
+
+                        <div className="flex gap-2 mt-2 flex-wrap">
+                          {variant.images.map((img, i) => (
+                            <img
+                              key={i}
+                              src={img}
+                              alt="preview"
+                              className="w-16 h-16 object-cover rounded"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            onClick={handleSubmit}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+          >
+            {loading
+              ? "Adding..."
+              : imgloading
+              ? "Image Uploading"
+              : "Add Product"}
+          </button>
         </div>
       </div>
     </Layout>

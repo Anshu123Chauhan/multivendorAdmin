@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BackHeader from "../components/backHeader";
 import { useUser } from "../config/userProvider";
 import Layout, { Container } from "../components/layout";
@@ -9,7 +9,9 @@ import { toast } from "react-toastify";
 import { Link,useNavigate, useParams } from "react-router-dom";
 import { getCookie } from "../config/webStorage";
 
-export default function AddRole() {
+export default function EditRole() {
+  const {id}=useParams();
+  console.log(id)
 
  const token = getCookie("zrotoken");
   const navigate = useNavigate();
@@ -17,7 +19,8 @@ export default function AddRole() {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    role_name: "",
+    roleName: "",
+    role_name:"",
     isActive: false,
     permissions: [
       {
@@ -86,6 +89,26 @@ export default function AddRole() {
     ],
   });
 
+    useEffect(() => {
+      const fetchRole = async () => {
+        try {
+          const res = await axios.get(`${apiurl}/admin/role-permission/${id}`, {
+            headers: { Authorization: token},
+          });
+          if (res.status === 200) {
+            setFormData(res.data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching category:", error);
+          toast.error("Failed to fetch category details");
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      if (id) fetchRole();
+    }, [id, token]);
+
   const handleCheckboxChange = (index, action) => {
     setFormData((prev) => {
       const updatedPermissions = [...prev.permissions];
@@ -101,8 +124,8 @@ export default function AddRole() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${apiurl}/admin/role-permission`,
+      const res = await axios.put(
+        `${apiurl}/admin/role-permission/${id}`,
         formData,
         {
           headers: {
@@ -114,7 +137,7 @@ export default function AddRole() {
       // console.log("res", res);
       if (res.data.success === true) {
         setLoading(false);
-        toast("Role Created Successfully");
+        toast("Role Updated Successfully");
         navigate("/role");
       }
     } catch (err) {
@@ -136,7 +159,11 @@ export default function AddRole() {
         <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
           {/* Header */}
           <div className="flex flex-wrap gap-2 mb-6">
-          
+          <Link to="/addRole">
+            <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+              Create new role
+            </button>
+          </Link>
             <Link to="/role">
               <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
                 Roles list
@@ -155,9 +182,9 @@ export default function AddRole() {
                 <input
                   type="text"
                   placeholder="Enter Name"
-                  value={formData.role_name}
+                  value={formData.roleName}
                   onChange={(e) =>
-                    setFormData({ ...formData, role_name: e.target.value })
+                    setFormData({ ...formData, roleName: e.target.value, role_name: e.target.value})
                   }
                   className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
                 />
