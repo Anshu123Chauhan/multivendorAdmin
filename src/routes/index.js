@@ -87,6 +87,7 @@ import EditProduct from "../pages/editProduct.js";
 import EditRole from "../pages/editRole.js"
 import AddAttribute from "../pages/addAttribute.js";
 import Attribute from "../pages/attribute.js";
+import EditAttribute from "../pages/editAttribute.js";
 
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
@@ -458,6 +459,7 @@ const Router = () => {
       <Route path="/editProduct/:id" element={<PrivateRoute element={<EditProduct />} />} />
       <Route path="/editRole/:id" element={<PrivateRoute element={<EditRole />} />} />
       <Route path="/addAttribute" element={<PrivateRoute element={<AddAttribute />} />} />
+      <Route path="/editAttribute/:id" element={<PrivateRoute element={<EditAttribute />} />} />
       <Route path="/attribute" element={<PrivateRoute element={<Attribute />} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

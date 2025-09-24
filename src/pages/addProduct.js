@@ -47,6 +47,9 @@ const AddProduct = () => {
       case "category":
         if (!value.trim()) error = "Category is required.";
         break;
+      case "subCategory":
+        if (!value.trim()) error = "Sub Category is required.";
+        break;
       case "description":
       if (!value.trim()) error = "Description is required.";
       break;
@@ -295,10 +298,11 @@ const AddProduct = () => {
     }
 
     const variants = combinations.map((combo) => {
-      const attrs = {};
-      combo.forEach((val, i) => {
-        attrs[attrKeys[i]] = val;
-      });
+      
+        const attrs = combo.map((val, i) => ({
+        type: attrKeys[i],
+        value: val,
+      }));
       return {
         sku: "",
         price: "",
@@ -330,6 +334,7 @@ const AddProduct = () => {
       mrp: formData.mrp,
       inventory: formData.inventory,
       productType: formData.productType,
+      sku:formData.sku,
       tags: formData.tags ? formData.tags.split(",").map((t) => t.trim()) : [],
       variants:
         formData.productType === "variable"
@@ -433,7 +438,7 @@ const AddProduct = () => {
                 value={formData.subCategory}
                 onChange={handleChange}
                 error={errors.subCategory}
-                // required={true}
+                required={true}
                 options={[
                   { value: "", label: "" },
                   ...filteredSubcategories.map((item) => ({
@@ -594,10 +599,11 @@ const AddProduct = () => {
                       <div key={idx} className="border p-4 rounded space-y-4">
                         <h4 className="font-medium">
                           Variant {idx + 1} -{" "}
-                          {Object.entries(variant.attributes)
-                            .map(([k, v]) => `${k}: ${v}`)
+                          {variant.attributes
+                            .map(attr => `${attr.type}: ${attr.value}`)
                             .join(", ")}
                         </h4>
+  
 
                         <div className="grid md:grid-cols-3 gap-6">
                           <FloatingInput

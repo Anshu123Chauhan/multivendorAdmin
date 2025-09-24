@@ -139,7 +139,7 @@ const Product = () => {
     console.log("trimmed value", trimmedValue);
 
     const updatedFilter = productData.filter((item) =>
-      item?.fullName?.toLowerCase().includes(trimmedValue.toLowerCase())
+      item?.name?.toLowerCase().includes(trimmedValue.toLowerCase())
     );
 
     setproductData(updatedFilter);
@@ -215,7 +215,7 @@ const Product = () => {
                       <td className="relative px-6 py-3">{product?.sellingPrice}</td>
                       <td className="relative px-6 py-3">{product?.mrp}</td>
                       <td className="relative px-6 py-3">
-                        {product?.isActive === true ? "Approved" : "Pending"}
+                        {product?.status === "active" ? "Active" : "Draft"}
                       </td>
                       <td className="relative px-4">
                         <span className="flex gap-1 cursor-pointer">
