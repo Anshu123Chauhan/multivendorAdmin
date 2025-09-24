@@ -80,7 +80,7 @@ export const FloatingInput = ({
       )}
 
       {type !== "file" && (
-        <label
+          <label
           htmlFor={name}
           className={`absolute text-sm duration-500 transform top-3 -z-10 origin-[0]
             ${hasValue ? "-translate-y-3 text-blue-600 z-10" : "text-gray-500"}

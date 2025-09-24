@@ -1,8 +1,7 @@
 import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { apiurl } from "./config";
-import { useLocation } from "react-router-dom";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie } from "./webStorage.js";
+import { jwtDecode } from "jwt-decode";
 
 const UserContext = createContext();
 
@@ -11,7 +10,7 @@ export const UserProvider = ({ children }) => {
   const [storeData, setStoreData] = useState("");
   const [openProfile, setCloseProfile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [permissions, setPermissions] = useState(false);
+  const [permissions, setPermissions] = useState(null);
   const [isPersonalize, setIsPersonalize] = useState(true);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
 
@@ -25,6 +24,21 @@ export const UserProvider = ({ children }) => {
 
   
   }, [userData]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    try {
+      const decoded = jwtDecode(token);
+      setPermissions(Array.isArray(decoded.permission) ? decoded.permission : []);
+      setUserData(decoded.user || null);
+    } catch (err) {
+      console.error("Invalid token:", err);
+      setPermissions([]);
+      setUserData(null);
+    }
+  }, [token]);
+  
 
   const [showInternetStatus, setShowInternetStatus] = useState(false);
   const [currentLocation, setCurrentLocation] = useState();

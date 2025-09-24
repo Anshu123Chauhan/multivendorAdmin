@@ -388,7 +388,7 @@ const AddProduct = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 py-6 px-4">
-        <BackHeader backButton={true} link="/productList" title="Back" />
+        <BackHeader backButton={true} link="/product" title="Back" />
         <div className="max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-xl space-y-6">
           <h2 className="text-2xl font-bold text-center text-blue-600">
             Create New Product
