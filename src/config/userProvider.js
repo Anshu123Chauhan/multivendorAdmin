@@ -30,14 +30,15 @@ export const UserProvider = ({ children }) => {
 
     try {
       const decoded = jwtDecode(token);
-      setPermissions(Array.isArray(decoded.permission) ? decoded.permission : []);
-      setUserData(decoded.user || null);
+      setPermissions(decoded)      
     } catch (err) {
       console.error("Invalid token:", err);
       setPermissions([]);
-      setUserData(null);
     }
   }, [token]);
+
+  console.log("permissions permissions", permissions)
+
   
 
   const [showInternetStatus, setShowInternetStatus] = useState(false);
