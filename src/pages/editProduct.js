@@ -28,6 +28,7 @@ const EditProduct = () => {
     attributes: {}, // for variable products
     variants: [], // will be generated
     usertype: "",
+    status:""
   });
 
   const [errors, setErrors] = useState({});
@@ -93,34 +94,35 @@ const EditProduct = () => {
         const res = await axios.get(`${apiurl}/admin/product/${id}`, {
           headers: { Authorization: token },
         });
-        if (res.status === 200) {
-          const product = res.data;
+         if (res.status === 200) {
+   const product = res.data;
 
-          let extractedAttributes = {};
-          if (product.variants && product.variants.length > 0) {
-            product.variants.forEach((variant) => {
-              Object.entries(variant.attributes).forEach(([key, value]) => {
-                if (!extractedAttributes[key]) extractedAttributes[key] = [];
-                if (!extractedAttributes[key].includes(value)) {
-                  extractedAttributes[key].push(value);
-                }
-              });
-            });
-          }
-
-          setFormData({
-            ...product,
-            category: product?.category?._id || "",
-            subCategory: product?.subCategory?._id || "",
-            brand: product?.brand?._id || "",
-            productType: product?.variants?.length > 0 ? "variable" : "single",
-            attributes: extractedAttributes,
-            variants: product.variants || [],
-          });
+  // Collect attributes grouped by type
+  const attributes = {};
+  product.variants.forEach(variant => {
+    variant.attributes.forEach(attr => {
+      if (!attributes[attr.type]) {
+        attributes[attr.type] = [];
+      }
+      if (!attributes[attr.type].includes(attr.value)) {
+        attributes[attr.type].push(attr.value);
+      }
+    });
+  });
+  setFormData({
+    ...product,
+    category: product?.category?._id || "",
+    subCategory: product?.subCategory?._id || "",
+    brand: product?.brand?._id || "",
+    productType: product?.variants?.length > 0 ? "variable" : "single",
+    attributes: attributes,
+    variants: product.variants || [],
+  });
 
           // ✅ make sure subcategories are filtered after product load
           fetchsubCategoryList(product?.category?._id, product?.subCategory?._id);
-        }
+}
+
       } catch (error) {
         console.error("Error fetching product:", error);
         toast.error("Failed to fetch product details");
@@ -308,18 +310,17 @@ const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
     });
   };
 
-  const handleAttributeChange = (attrName, values) => {
-    setFormData((prev) => ({
-      ...prev,
-      attributes: {
-        ...prev.attributes,
-        [attrName]: values
-          .split(",")
-          .map((v) => v.trim())
-          .filter((v) => v !== ""),
-      },
-    }));
-  };
+const handleAttributeChange = (attrName, values) => {
+  setFormData((prev) => ({
+    ...prev,
+    attributes: {
+      ...prev.attributes,
+      [attrName]: values, // already array now
+    },
+  }));
+};
+
+
 
   const addAttribute = () => {
     if (!newAttr.trim()) return;
@@ -333,44 +334,51 @@ const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
     setNewAttr("");
   };
 
-  const generateVariants = () => {
-    const { attributes } = formData;
-    const attrKeys = Object.keys(attributes);
-    if (attrKeys.length === 0) {
-      toast.warning("Please add at least one attribute.");
-      return;
-    }
+const generateVariants = () => {
+  const { attributes } = formData;
+  const attrKeys = Object.keys(attributes);
+  if (attrKeys.length === 0) {
+    toast.warning("Please add at least one attribute.");
+    return;
+  }
 
-    // Cartesian product helper
-    const cartesian = (arr) =>
-      arr.reduce((a, b) => a.flatMap((d) => b.map((e) => [...d, e])), [[]]);
+  // Cartesian product helper
+  const cartesian = (arr) =>
+    arr.reduce((a, b) => a.flatMap((d) => b.map((e) => [...d, e])), [[]]);
 
-    const combinations = cartesian(
-      attrKeys.map((key) => attributes[key] || [])
+  const combinations = cartesian(
+    attrKeys.map((key) => attributes[key] || [])
+  );
+
+  if (combinations.length === 0) {
+    toast.warning("Please enter values for attributes.");
+    return;
+  }
+
+  const newVariants = combinations.map((combo) => {
+    const attrs = combo.map((val, i) => ({
+      type: attrKeys[i],
+      value: val,
+    }));
+
+    // Check if variant already exists
+    const existing = formData.variants.find((v) =>
+      JSON.stringify(v.attributes) === JSON.stringify(attrs)
     );
 
-    if (combinations.length === 0) {
-      toast.warning("Please enter values for attributes.");
-      return;
-    }
+    return existing || {
+      sku: "",
+      price: "",
+      mrp: "",
+      stock: "",
+      images: [],
+      attributes: attrs,
+    };
+  });
 
-    const variants = combinations.map((combo) => {
-      const attrs = {};
-      combo.forEach((val, i) => {
-        attrs[attrKeys[i]] = val;
-      });
-      return {
-        sku: "",
-        price: "",
-        mrp: "",
-        stock: "",
-        images: [], // ✅ images for variant
-        attributes: attrs,
-      };
-    });
+  setFormData((prev) => ({ ...prev, variants: newVariants }));
+};
 
-    setFormData((prev) => ({ ...prev, variants }));
-  };
 
   const handleSubmit = async (e) => {
     console.log(formData)
@@ -391,6 +399,7 @@ const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
       sku:formData.sku,
       inventory: formData.inventory,
       productType: formData.productType,
+      status:formData.status,
       // tags: formData?.tags ? formData?.tags?.split(",").map((t) => t.trim()) : [],
       tags:[],
       variants:
@@ -495,7 +504,7 @@ const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
                 value={formData.subCategory}
                 onChange={handleChange}
                 error={errors.subCategory}
-                // required={true}
+                required={true}
                 options={[
                   { value: "", label: "" },
                   ...filteredSubcategories.map((item) => ({
@@ -628,18 +637,20 @@ const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
                 </div>
 
                 {/* Attribute Inputs */}
-                {Object.keys(formData.attributes).map((attrName, idx) => (
-                 <textarea
-                    key={idx}
-                    placeholder={`Enter ${attrName} values (comma separated)`}
-                    value={formData.attributes[attrName].join(",")}
-                    onChange={(e) =>
-                      handleAttributeChange(attrName, e.target.value)
-                    }
-                    className="w-full border rounded p-2"
-                  />
+               {Object.keys(formData.attributes).map((attrName, idx) => (
+               <textarea
+  key={idx}
+  placeholder={`Enter ${attrName} values (comma separated)`}
+  value={formData.attributes[attrName]?.join(",") || ""}  // ✅ show as string
+  onChange={(e) =>
+    handleAttributeChange(attrName, e.target.value.split(",").map(v => v.trim())) // ✅ store as array
+  }
+  className="w-full border rounded p-2"
+/>
+
 
                 ))}
+
 
                 <button
                   type="button"
@@ -657,8 +668,8 @@ const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
                       <div key={idx} className="border p-4 rounded space-y-4">
                         <h4 className="font-medium">
                           Variant {idx + 1} -{" "}
-                          {Object.entries(variant.attributes)
-                            .map(([k, v]) => `${k}: ${v}`)
+                          {variant.attributes
+                            .map(attr => `${attr.type}: ${attr.value}`)
                             .join(", ")}
                         </h4>
 
@@ -725,7 +736,34 @@ const fetchsubCategoryList = async (catid = "", selectedSub = "") => {
                 )}
               </div>
             )}
-
+            <div className="flex gap-6">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="active"
+                      checked={formData.status === "active"}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, status: "active" }))
+                      }
+                      className="text-[#D4550B] focus:ring-[#D4550B] border"
+                    />
+                    Active
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="draft"
+                      checked={formData.status === "draft"}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, status: "draft" }))
+                      }
+                      className="text-[#D4550B] focus:ring-[#D4550B] border"
+                    />
+                    Inactive
+                  </label>
+                </div>
             <button
               type="submit"
               disabled={loading}
