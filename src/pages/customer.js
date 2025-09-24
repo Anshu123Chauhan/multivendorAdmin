@@ -46,8 +46,8 @@ const Customer = () => {
         },
       });
       if (response.data.success === true) {
-        setcustomerData(response?.data?.customerList);
-        setAllAdmin(response?.data?.customerList);
+        setcustomerData(response?.data?.sellerList);
+        setAllAdmin(response?.data?.sellerList);
       }
     } catch (error) {
       console.error("Error fetching filters:", error);
@@ -181,7 +181,6 @@ const Customer = () => {
                       "Address",
                       "Phone no.",
                       "Email",
-                      "Status",
                       "Action",
                     ].map((item, index) => (
                       <th key={index} scope="col" className="px-6 py-3">
@@ -198,19 +197,19 @@ const Customer = () => {
                     >
                       <td className="relative px-6 py-3">{index + 1}</td>
                       <td className="relative px-6 py-3 capitalize">
-                        {customer?.fullName}
+                        {customer?.name}
                       </td>
                       <td className="relative px-6 py-3">
-                        {customer?.businessAddress}
+                        {customer?.address||"N/A"}
                       </td>
                       <td className="relative px-6 py-3">{customer?.phone}</td>
                       <td className="relative px-6 py-3">{customer?.email}</td>
-                      <td className="relative px-6 py-3">
+                      {/* <td className="relative px-6 py-3">
                         {customer?.isActive === true ? "Approved" : "Pending"}
-                      </td>
+                      </td> */}
                       <td className="relative px-4">
                         <span className="flex gap-1 cursor-pointer">
-                          <CiEdit
+                          <AiOutlineEye
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
                             onClick={() => handleViewStatus(customer?._id)}
                           />

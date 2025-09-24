@@ -216,17 +216,17 @@ const Subsubcategory = () => {
                           </td>
 
                           <td
-                            className="px-6 py-4 text-center"
+                            className="px-6 py-4 text-left"
                           >
                             {subcategory?.category?.name}
                           </td>
                           <td
-                            className="px-6 py-4 text-center"
+                            className="px-6 py-4 text-left"
                           >
                             {subcategory?.name}
                           </td>
                           <td
-                            className="px-6 py-4 text-center"
+                            className="px-6 py-4 text-left"
                           >
                             {subcategory?.description ? (
                               <p>{subcategory.description}</p>

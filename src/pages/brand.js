@@ -210,14 +210,14 @@ const Brand = () => {
                         >
                           <td className="px-4 py-4">{index + 1}</td>
 
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-6 py-4 text-left">
                             {brand?.name}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-6 py-4 text-left">
                             {brand?.description}
                           </td>
 
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-6 py-4 text-left">
                             <img src={brand?.image} className="max-w-20 " />
                           </td>
                           

@@ -231,14 +231,14 @@ const Category = () => {
                         >
                           <td className="px-4 py-4">{index + 1}</td>
 
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-6 py-4 text-left">
                             {category?.name}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-6 py-4 text-left">
                             {category?.description}
                           </td>
 
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-6 py-4 text-left">
                             <img src={category?.image} className="max-w-20 " />
                           </td>
                           
