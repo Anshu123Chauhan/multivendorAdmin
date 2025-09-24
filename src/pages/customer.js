@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useMemo } from "react";
 import Layout, { Container } from "../components/layout";
 import BackHeader from "../components/backHeader";
 import Input from "../components/inputContainer";
@@ -9,12 +9,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { apiurl } from "../config/config";
 import { DynamicLoader } from "../components/loader";
 import { AiOutlineEye } from "react-icons/ai";
-import { MdDeleteForever } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
-import { useStepContext } from "@mui/material";
 import { getCookie } from "../config/webStorage";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { jwtDecode } from "jwt-decode";
 
 const Customer = () => {
   const [customerData, setcustomerData] = useState([]);
@@ -30,11 +28,18 @@ const Customer = () => {
   const [loading, setloading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const token = getCookie("zrotoken");
+   const decodedToken = useMemo(() => {
+        if (!token) return null;
+        try {
+          return jwtDecode(token);
+        } catch (error) {
+          console.error("Invalid token:", error);
+          return null;
+        }
+      }, [token]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchcustomer();
-  }, []);
+
 
   const fetchcustomer = async () => {
     setloading(true);
@@ -143,6 +148,14 @@ const Customer = () => {
 
     setcustomerData(updatedFilter);
   };
+   useEffect(() => {
+    // console.log("storeId", id);
+  
+    if (decodedToken?.userType === "Admin") {
+      fetchcustomer();
+    }
+  }, [decodedToken]); 
+  
 
   return (
     <Layout>
