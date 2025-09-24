@@ -88,6 +88,8 @@ import EditRole from "../pages/editRole.js"
 import AddAttribute from "../pages/addAttribute.js";
 import Attribute from "../pages/attribute.js";
 import EditAttribute from "../pages/editAttribute.js";
+import Customer from "../pages/customer.js"
+import CustomerDetails from "../pages/customerDetails.js";
 
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
@@ -461,6 +463,8 @@ const Router = () => {
       <Route path="/addAttribute" element={<PrivateRoute element={<AddAttribute />} />} />
       <Route path="/editAttribute/:id" element={<PrivateRoute element={<EditAttribute />} />} />
       <Route path="/attribute" element={<PrivateRoute element={<Attribute />} />} />
+      <Route path="/customers" element={<PrivateRoute element={<Customer />} />} />
+      <Route path="/customers/:id" element={<PrivateRoute element={<CustomerDetails />} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
