@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Header from "./header";
 import Sidebar from "./sidebar";
 import { IoClose } from "react-icons/io5";
 import { useUser } from "../config/userProvider";
 import "../styles/Admin.css";
+import { jwtDecode } from "jwt-decode";
 import MobileFooter from "./mobileFooter";
 
 // import { IoClose } from "react-icons/io5";
 
 import { logoUrl } from "../config/config";
 import logo from "../assets/logo1.png";
+import { getCookie } from "../config/webStorage";
 
 const Layout = ({ children }) => {
   const {
@@ -26,6 +28,17 @@ const Layout = ({ children }) => {
   const toggleButtonVisibility = () => {
     setIsButtonVisible(!isButtonVisible);
   };
+
+  const token = getCookie("zrotoken");
+  const decodedToken = useMemo(() => {
+    if (!token) return null;
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  }, [token]);
 
   return (
     <div
@@ -60,7 +73,7 @@ const Layout = ({ children }) => {
               alt="Logo"
               className="h-10 mb-6"
             /> */}
-            <h1 className="font-bold text-3xl text-center text-blue-500">Admin</h1>
+            <h1 className="font-bold text-3xl text-center text-blue-500">{decodedToken?.userType}</h1>
             <div
               className="text-2xl text-white  block md:hidden cursor-pointer"
               onClick={() => setIsMenuOpen(false)}

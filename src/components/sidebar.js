@@ -37,8 +37,6 @@ const decodedToken = useMemo(() => {
 }, [token]);
 
 
- 
-
   useEffect(() => {
      const NavigationData = {
     superadmin: [
@@ -55,7 +53,7 @@ const decodedToken = useMemo(() => {
       { title: "Services", icon: <RiServiceLine />, location: "/service" },
       { title: "Filter", icon: <CiFilter />, location: "/filter", permission: "filter" },
       { title: "Banner", icon: <IoIosImages />, location: "/banner", permission: "banner" },
-      { title: "customers", icon: <IoIosPeople />, location: "/customers", permission: "customers" },
+      { title: "customers", icon: <IoIosPeople />, location: "/customer", permission: "customer" },
       {
         title: "orders",
         icon: <RiShoppingCart2Line />,
@@ -73,6 +71,7 @@ const decodedToken = useMemo(() => {
       // { title: "coupons", icon: <CiCreditCard2 />, location: "/coupons", permission: "coupons" },
     ],
   };
+  
     let menu = NavigationData.superadmin;
     if (decodedToken?.userType === "Admin") {
       menu = NavigationData.superadmin
@@ -83,11 +82,18 @@ const decodedToken = useMemo(() => {
       menu = menu.filter((item) => !exclude.includes(item.title));
     }
 
-    if (decodedToken?.userType === "User") {
-      menu = menu.filter((item) =>
-        item.permission ? permissions?.includes(item.permission) : true
-      );
-    }
+  if (decodedToken?.userType === "User") {
+    const userPermissions = Array.isArray(decodedToken?.permission) ? decodedToken.permission : [];
+    const allowedTabs = new Set(
+      userPermissions.filter((p) => p.p_read).map((p) => p.tab_name.toLowerCase())
+    );
+    menu = menu.filter((item) => {
+      if (item.title.toLowerCase() === "dashboard") return true;
+      if (!item.permission) return allowedTabs.has(item.title.toLowerCase());
+      return allowedTabs.has(item.permission.toLowerCase());
+    });
+  }
+
 
     setFilteredMenu(menu);
   }, [decodedToken, permissions]);
