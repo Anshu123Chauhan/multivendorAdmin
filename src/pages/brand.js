@@ -226,7 +226,7 @@ const Brand = () => {
                           </td>
                           
                         
-                          {/* <td className="px-6 py-4">
+                          <td className="px-6 py-4">
                             <div className="flex text-2xl">
                               <AiOutlineEye
                                 className="p-1 rounded-md text-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200"
@@ -245,9 +245,9 @@ const Brand = () => {
                                 onClick={() => deleteBrand(brand?._id)}
                               />
                             </div>
-                          </td> */}
+                          </td>
 
-                          <td className="px-6 py-4">
+                          {/* <td className="px-6 py-4">
                             <ActionButton
                               item={brand}
                               tabName="Brand"
@@ -256,7 +256,7 @@ const Brand = () => {
                               onEdit={() => navigate(`/editBrand/${brand?._id}`)}
                               onDelete={() => deleteBrand(brand?._id)}
                             />
-                          </td>
+                          </td> */}
                         </tr>
                       );
                     })}

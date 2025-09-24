@@ -15,7 +15,6 @@ import { useStepContext } from "@mui/material";
 import { getCookie } from "../config/webStorage";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import ActionButton from "../components/actionBtn";
 
 const Product = () => {
   const [productData, setproductData] = useState([]);
@@ -32,8 +31,6 @@ const Product = () => {
   const [searchInput, setSearchInput] = useState("");
   const token = getCookie("zrotoken");
   const navigate = useNavigate();
-  const { permissions } = useUser()
-  
 
   useEffect(() => {
     fetchProduct();
@@ -86,6 +83,10 @@ const Product = () => {
     } catch (error) {
       console.error("Error updating admin status:", error);
     }
+  };
+
+  const handleEditStatus = (id) => {
+    navigate(`/editProduct/${id}`);
   };
 
   const deleteProduct = (id) => {
@@ -217,7 +218,7 @@ const Product = () => {
                         {product?.status === "active" ? "Active" : "Draft"}
                       </td>
                       <td className="relative px-4">
-                        {/* <span className="flex gap-1 cursor-pointer">
+                        <span className="flex gap-1 cursor-pointer">
                           <CiEdit
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
                             onClick={() => handleEditStatus(product?._id)}
@@ -226,15 +227,7 @@ const Product = () => {
                             className="p-1 text-2xl rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
                             onClick={() => deleteProduct(product?._id)}
                           />
-                        </span> */}
-                        <ActionButton
-                          item={product}
-                          tabName="product"
-                          permissions={permissions}
-                          onView={() => navigate(`/product/${product?._id}`)}
-                          onEdit={() => navigate(`/editProduct/${product?._id}`)}
-                          onDelete={() => deleteProduct(product?._id)}
-                          />               
+                        </span>
                       </td>
                     </tr>
                   ))}
