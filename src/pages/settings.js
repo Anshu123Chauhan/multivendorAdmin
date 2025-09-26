@@ -20,18 +20,20 @@ const Settings = () => {
   const [savingLoading, setSavingLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [paymentid,setPaymentid]=useState("")
 
   const [formData, setFormData] = useState({
-    api_key: "",
-    secret_key: "",
+    apikey: "",
+    secretkey: "",
+    gatewayname:"",
+    status:"active"
   });
 
   const handleChange = async (e) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
    
     setFormData((prev) => ({
       ...prev,
-      meta: formData.name,
       [name]: value,
     }));
     setErrors((prevErrors) => {
@@ -46,13 +48,35 @@ const Settings = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.api_key) newErrors.api_key = "API KEY is required.";
-    if (!formData.secret_key)
-      newErrors.secret_key = "SECRET KEY is required.";
+    if (!formData.gatewayname)
+      newErrors.gatewayname = "Gateway name is required.";
+    if (!formData.apikey) newErrors.apikey = "API KEY is required.";
+    if (!formData.secretkey)
+      newErrors.secretkey = "SECRET KEY is required.";
    
     return newErrors;
   };
-
+  const fetchSettingData = async () => {
+    try {
+      const response = await axios.get(`${apiurl}/admin/paymentsetting`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+     
+      if (response?.data?.success) {
+        setFormData(response?.data?.data[0] || []);
+        setPaymentid(response?.data?.data[0]._id)
+      }
+    } catch (error) {
+      console.error("Error fetching store list:", error);
+    } finally {
+    }
+  };
+  useEffect(() => {
+  
+    fetchSettingData();
+  }, []);
 
 
   const createCategory = async (e) => {
@@ -64,12 +88,24 @@ const Settings = () => {
 
     try {
       setSavingLoading(true);
-      const res = await axios.post(`${apiurl}/admin/settings`, formData, {
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-      });
+      let res=""
+      if(!paymentid){
+       
+        res = await axios.post(`${apiurl}/admin/paymentsetting`, formData, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
+      }
+      else{
+         res = await axios.put(`${apiurl}/admin/paymentsetting/${paymentid}`, formData, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
+      }
 
       if (res.data.success === true) {
         toast.success("Settings saved Successfully");
@@ -97,28 +133,73 @@ const Settings = () => {
         <div className="p-6 min-h-screen">
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-md shadow-md">
             <h2 className="text-2xl font-bold text-center text-[#D4550B]">
-              Add Razorpay Keys
+              Save Razorpay Keys
             </h2>
             <div className="grid md:grid-cols-1 gap-6 mt-5">
               <FloatingInput
+                label="Gateway Provide"
+                type="text"
+                name="gatewayname"
+                value={formData.gatewayname}
+                onChange={handleChange}
+                error={errors.gatewayname}
+                required={true}
+              />
+              <FloatingInput
                 label="Api Key"
                 type="text"
-                name="name"
-                value={formData.api_key}
+                name="apikey"
+                value={formData.apikey}
                 onChange={handleChange}
-                error={errors.api_key}
+                error={errors.apikey}
                 required={true}
               />
 
               <FloatingInput
                 label="Secret Key"
                 type="text"
-                name="secret_key"
-                value={formData.secret_key}
+                name="secretkey"
+                value={formData.secretkey}
                 onChange={handleChange}
-                error={errors.secret_key}
+                error={errors.secretkey}
                 required={true}
               />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status <span className="text-red-500">*</span>
+                </label>
+                <div className="flex gap-6">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="active"
+                      checked={formData.status == "active"}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, status: "active" }))
+                      }
+                      className="text-[#D4550B] focus:ring-[#D4550B] border"
+                    />
+                    Active
+
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="draft"
+                      checked={formData.status =="draft"}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, status: "draft" }))
+                      }
+                      className="text-[#D4550B] focus:ring-[#D4550B] border"
+                    />
+                  
+
+                    Inactive
+                  </label>
+                </div>
+              </div>
             
 
             </div>
