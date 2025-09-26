@@ -24,21 +24,6 @@ export const UserProvider = ({ children }) => {
 
   
   }, [userData]);
-
-  useEffect(() => {
-    if (!token) return;
-
-    try {
-      const decoded = jwtDecode(token);
-      setPermissions(decoded)      
-    } catch (err) {
-      console.error("Invalid token:", err);
-      setPermissions([]);
-    }
-  }, [token]);
-
-  console.log("permissions permissions", permissions)
-
   
 
   const [showInternetStatus, setShowInternetStatus] = useState(false);
