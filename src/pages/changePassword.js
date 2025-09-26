@@ -77,7 +77,7 @@ const ChangePassword = () => {
       setLoading(true);
 
       const response = await axios.post(
-        `${apiurl}/admin/auth/update-password`,
+        `${apiurl}/admin/update-password`,
         { password },
         {
           headers: {
@@ -139,7 +139,7 @@ const ChangePassword = () => {
           {/* Confirm Password Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
+              Confirm Password   
             </label>
             <div className="relative">
               <input
