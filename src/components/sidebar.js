@@ -161,7 +161,7 @@ const decodedToken = useMemo(() => {
         ))}
       </div>
 
-      <NavLink to={"/settings/generalSettings"}>
+      <NavLink to={"/settings"}>
         <button
           onClick={() => setIsSettingOpen(true)}
           className="text-black px-2 py-2 rounded-lg w-full flex items-center gap-1.5 border-transparent capitalize text-sm border hover:border-orange-300 hover:text-orange-500 mt-12 mb-4"

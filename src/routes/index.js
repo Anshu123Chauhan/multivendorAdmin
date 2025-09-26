@@ -90,6 +90,7 @@ import Attribute from "../pages/attribute.js";
 import EditAttribute from "../pages/editAttribute.js";
 import Customer from "../pages/customer.js"
 import CustomerDetails from "../pages/customerDetails.js";
+import Settings from "../pages/settings.js";
 
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
@@ -300,6 +301,10 @@ const Router = () => {
       <Route
         path="/languages"
         element={<PrivateRoute element={<Language />} />}
+      />
+       <Route
+        path="/settings"
+        element={<PrivateRoute element={<Settings />} />}
       />
       <Route
         path="/settings/policy"

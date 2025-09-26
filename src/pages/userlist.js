@@ -213,7 +213,7 @@ const UserList = () => {
                       </td>
                       <td className="relative px-6 py-3">{user?.phone}</td>
                       <td className="relative px-6 py-3">{user?.email}</td>
-                      <td className="relative px-6 py-3">{user?.role_name}</td>
+                      <td className="relative px-6 py-3">{user?.role_id?.role_name}</td>
                       <td className="relative px-6 py-3">
                         {user?.isActive === true ? "Approved" : "Pending"}
                       </td>
