@@ -9,6 +9,7 @@ import { apiurl, logoUrl, loginSideImage } from "../config/config";
 import logo from "../assets/logo.png";
 import LoginBanner from "../assets/logo1.png";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 const UserLogin = () => {
   const [password, setPassword] = useState("");
@@ -44,6 +45,11 @@ const UserLogin = () => {
       }
     } catch (error) {
       setError("Login failed. Please try again.");
+       const message = error.response.data?.error || error.response.data?.message;
+      toast.warn(message,{
+        position: "top-center",
+        autoClose: 6000,
+      });
     } finally {
       setloginloading(false);
     }

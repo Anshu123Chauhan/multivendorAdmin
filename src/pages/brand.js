@@ -14,6 +14,9 @@ import { CiEdit } from "react-icons/ci";
 import { ToastContainer, toast } from "react-toastify";
 import { getCookie } from "../config/webStorage";
 import ActionButton from "../components/actionBtn";
+import { usePermission } from "../components/getPermission";
+
+
 const Brand = () => {
   const { userData } = useUser();
     const token = getCookie("zrotoken");
@@ -32,9 +35,8 @@ const Brand = () => {
     totalPages,
   } = pagination;
   const [current_Page, setCurrentPage] = useState(currentPage);
-  const { permissions } = useUser()
+  const {permission, userType}  = usePermission()
 
-  console.log("permissions brand------------>", permissions)
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -226,7 +228,7 @@ const Brand = () => {
                           </td>
                           
                         
-                          <td className="px-6 py-4">
+                          {/* <td className="px-6 py-4">
                             <div className="flex text-2xl">
                               <AiOutlineEye
                                 className="p-1 rounded-md text-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200"
@@ -245,18 +247,20 @@ const Brand = () => {
                                 onClick={() => deleteBrand(brand?._id)}
                               />
                             </div>
-                          </td>
-
-                          {/* <td className="px-6 py-4">
-                            <ActionButton
-                              item={brand}
-                              tabName="Brand"
-                              permissions={permissions}
-                              onView={() => navigate(`/brand/${brand?._id}`)}
-                              onEdit={() => navigate(`/editBrand/${brand?._id}`)}
-                              onDelete={() => deleteBrand(brand?._id)}
-                            />
                           </td> */}
+
+                      <td className="px-6 py-4">
+                        <ActionButton
+                          item={brand}
+                          tabName="Brand"
+                          permission={permission} 
+                          userType={userType}
+                          onView={() => navigate(`/brand/${brand?._id}`)}
+                          onEdit={() => navigate(`/editBrand/${brand?._id}`)}
+                          onDelete={() => deleteBrand(brand?._id)}
+                        />
+                      </td>
+
                         </tr>
                       );
                     })}
