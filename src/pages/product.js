@@ -238,6 +238,7 @@ const Product = () => {
                             tabName="Product"
                             permission={permission} 
                             userType={userType}
+                            onView={()=>navigate(`/products/${product?._id}`)}
                             onEdit={() => navigate(`/editProduct/${product?._id}`)}
                             onDelete={() => deleteProduct(product?._id)}
                             />
