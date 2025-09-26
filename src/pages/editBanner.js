@@ -49,26 +49,33 @@ const EditBanner = () => {
   };
 
   const handleFileUpload = async (e) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      toast.error("Please select a file.");
-      return;
-    }
-    try {
-      setUploading(true);
-      const file = e.target.files[0];
-      const formDataUpload = new FormData();
-      formDataUpload.append("file", file);
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
 
-      const response = await axios.post(
-        `${apiurl}/admin/upload-image`,
-        formDataUpload
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", "lakmesalon");
+      data.append("cloud_name", "dv5del8nh");
+
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dv5del8nh/upload",
+        {
+          method: "POST",
+          body: data,
+        }
       );
 
-      const secure_url = response.data.url;
-      setFormData((prev) => ({ ...prev, image: secure_url }));
+      const result = await res.json();
+      if (result.secure_url) {
+        setFormData((prev) => ({ ...prev, image: result.secure_url }));
+      } else {
+        toast.error("Upload failed. Try again.");
+      }
     } catch (err) {
-      console.error("Upload failed:", err);
-      toast.error("Upload failed!");
+      console.error(err);
+      toast.error("Upload error");
     } finally {
       setUploading(false);
     }
@@ -103,8 +110,7 @@ const EditBanner = () => {
         { headers: { Authorization: token } }
       );
 
-
-      if (response.data.success===true) {
+      if (response.data.success === true) {
         toast.success("Banner updated successfully!");
         navigate("/banner");
       }
@@ -172,13 +178,16 @@ const EditBanner = () => {
                         <video
                           src={formData.image}
                           className="w-48 rounded mb-2"
+                          autoPlay
+                          muted
+                          loop
                           controls
                         />
                       ) : (
                         <img
                           src={formData.image}
                           alt="Banner"
-                          className="w-48 rounded mb-2"
+                          className="w-80 rounded mb-2"
                         />
                       )
                     ) : null}

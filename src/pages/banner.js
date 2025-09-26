@@ -124,13 +124,16 @@ const Banner = () => {
                           banner.image.endsWith(".mp4") ? (
                             <video
                               src={banner.image}
-                              className="w-12 h-12 object-cover rounded"
+                              className="w-40 h-auto object-cover rounded"
+                              autoPlay
+                              muted
+                              loop
                               controls
                             />
                           ) : (
                             <img
                               src={banner.image}
-                              className="w-12 h-12 object-cover rounded"
+                              className="w-40 h-auto object-cover rounded"
                             />
                           )
                         ) : (
