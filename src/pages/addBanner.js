@@ -97,7 +97,7 @@ const AddBanner = () => {
           Authorization: token,
         },
       });
-      if (response.data.success===true) {
+      if (response.data.success === true) {
         toast.success("Banner created successfully!");
         setFormData({
           image: "",
@@ -143,13 +143,16 @@ const AddBanner = () => {
                         <video
                           src={formData.image}
                           className="w-48 rounded mb-2"
+                          autoPlay
+                          muted
+                          loop
                           controls
                         />
                       ) : (
                         <img
                           src={formData.image}
                           alt="Banner"
-                          className="w-48 rounded mb-2"
+                          className="w-80 rounded mb-2"
                         />
                       )
                     ) : null}
