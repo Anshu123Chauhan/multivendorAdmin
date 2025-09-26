@@ -77,7 +77,7 @@ const ChangePassword = () => {
       setLoading(true);
 
       const response = await axios.put(
-        `${apiurl}/admin/update-password`,
+        `${apiurl}/admin/updatepassword`,
         { password },
         {
           headers: {
