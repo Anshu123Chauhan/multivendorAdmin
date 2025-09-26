@@ -5,7 +5,8 @@ import { apiurl } from "../config/config";
 import { BiError } from "react-icons/bi";
 import { BlinkLoader } from "../components/loader";
 import { setCookie } from "../config/webStorage.js";
-import logo from "../logo.svg";
+import logo from "../assets/logo.png";
+import LoginBanner from "../assets/logo1.png";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -38,34 +39,12 @@ const ForgetPassword = () => {
     <>
       <div className=" flex justify-center items-center w-full h-screen">
         <div className="rounded-lg md:shadow-sm md:border md:max-w-[66%]  md:min-h-[70%]   flex flex-col md:flex-row bg-white">
-          <img
-            src={logo}
-            alt="Logo"
-            className="h-16 md:hidden mx-auto mb-6 mt-10"
-          />
-
+          
           {/* Left Side */}
-          <div className="w-full md:w-1/2 bg-indigo-50 p-8 md:flex flex-col justify-center items-center hidden ">
-            <div className=" w-full flex flex-col justify-between h-full relative">
-              <div className="flex  justify-center w-full">
-                <img src={logo} alt="Logo" className="h-28 mb-6 " />
-              </div>
-              <div className="flex flex-col  justify-end pb-10 items-start h-full">
-                <p className="text-5xl   font-semibold  text-left pr-10 text-gray-600 mb-8">
-                  Building the future of digital experiences
-                </p>
-                <Link
-                       to="https:/fixlabs.ai/signup"
-                  className="block mt-5  text-center bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-xl rounded-md transition duration-200"
-                >
-                  Sign up
-                </Link>
-              </div>
-            </div>
-          </div>
+         
 
           {/* Right Side */}
-          <div className="w-full md:w-1/2 p-8 flex flex-col justify-center items-center">
+          <div className="w-full p-8 flex flex-col justify-center items-center">
             <div className="max-w-md w-full">
               <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
                 Forget your account password
@@ -122,12 +101,12 @@ const ForgetPassword = () => {
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account yet?{" "}
+                  Already have account? 
                   <Link
-                           to="https:/fixlabs.ai/signup"
-                    className="text-indigo-600 hover:text-indigo-500"
+                           to="http://localhost:3017/"
+                    className="text-indigo-600 hover:text-indigo-500 pl-2"
                   >
-                    Sign up
+                    Sign In
                   </Link>
                 </p>
               </div>

@@ -131,10 +131,10 @@ const UserLogin = () => {
               </button>
             </form>
           </div>
-          {/* <p className="text-xs text-gray-400 text-center mt-4">
-            Don't have an account?{" "}
-            <Link className="text-orange-600 hover:underline">Sign up</Link>
-          </p> */}
+          <p className="text-xs text-gray-400 text-center mt-4">
+            lost your password?{" "}
+            <Link to="/forgetpassword" className="text-orange-600 hover:underline">Forgot Password</Link>
+          </p>
         </div>
         <div className="hidden md:flex w-1/2 items-center justify-center bg-black">
           {loginSideImage ? (
