@@ -214,6 +214,10 @@ const Seller = () => {
                       </td>
                       <td className="relative px-4">
                         <span className="flex gap-1 cursor-pointer">
+                          <AiOutlineEye
+                            className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
+                            onClick={() => navigate(`/sellerDetails/${seller?._id}`)}
+                          />
                           <CiEdit
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
                             onClick={() => handleEditStatus(seller?._id)}

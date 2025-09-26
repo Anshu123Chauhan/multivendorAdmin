@@ -106,7 +106,7 @@ const Product = () => {
       if (result.isConfirmed) {
         console.log("Deleting admin with id:", id);
         handleDeleteProduct(id);
-        Swal.fire("Deleted!", "The admin has been deleted.", "success");
+        Swal.fire("Deleted!", "The Product has been deleted.", "success");
       }
     });
   };
