@@ -9,6 +9,8 @@ import { DynamicLoader } from "../components/loader";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 import { getCookie } from "../config/webStorage";
+import Swal from "sweetalert2";
+
 
 const Banner = () => {
   const token = getCookie("zrotoken");
@@ -39,7 +41,22 @@ const Banner = () => {
     }
   };
 
-  const handleEdit = (id) => navigate(`/editBanner/${id}`);
+  const deleteBanner = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won’t be able to revert this action!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+        Swal.fire("Deleted!", "The Banner has been deleted.", "success");
+      }
+    });
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -124,7 +141,7 @@ const Banner = () => {
                           banner.image.endsWith(".mp4") ? (
                             <video
                               src={banner.image}
-                              className="w-40 h-auto object-cover rounded"
+                              className="w-52 h-auto object-cover rounded"
                               autoPlay
                               muted
                               loop
@@ -133,7 +150,7 @@ const Banner = () => {
                           ) : (
                             <img
                               src={banner.image}
-                              className="w-40 h-auto object-cover rounded"
+                              className="w-52 h-auto object-cover rounded"
                             />
                           )
                         ) : (
@@ -162,11 +179,13 @@ const Banner = () => {
                         <div className="flex gap-2">
                           <CiEdit
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200"
-                            onClick={() => handleEdit(banner._id)}
+                            onClick={() =>
+                              navigate(`/editBanner/${banner._id}`)
+                            }
                           />
                           <MdDeleteForever
                             className="p-1 text-2xl rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200"
-                            onClick={() => handleDelete(banner._id)}
+                            onClick={() => deleteBanner(banner._id)}
                           />
                         </div>
                       </td>

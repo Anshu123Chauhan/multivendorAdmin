@@ -92,6 +92,7 @@ import Customer from "../pages/customer.js"
 import CustomerDetails from "../pages/customerDetails.js";
 import Settings from "../pages/settings.js";
 import ProductDetails from "../pages/productDetails.js";
+import SellerDetails from "../pages/sellerDetails.js";
 
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
@@ -125,6 +126,7 @@ const Router = () => {
       <Route path="/update_password" element={<ChangePassword />} />
       <Route path="/addseller" element={<AddSeller />} />
       <Route path="/sellerList" element={<Seller />} />
+      <Route path="/sellerDetails/:id" element={<SellerDetails />} />
       
       
       <Route

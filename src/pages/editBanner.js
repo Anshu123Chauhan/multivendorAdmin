@@ -177,7 +177,7 @@ const EditBanner = () => {
                       formData.image.endsWith(".mp4") ? (
                         <video
                           src={formData.image}
-                          className="w-48 rounded mb-2"
+                          className="w-80 h-auto rounded mb-2"
                           autoPlay
                           muted
                           loop
@@ -187,7 +187,7 @@ const EditBanner = () => {
                         <img
                           src={formData.image}
                           alt="Banner"
-                          className="w-80 rounded mb-2"
+                          className="w-80 h-auto rounded mb-2"
                         />
                       )
                     ) : null}
