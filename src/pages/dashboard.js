@@ -361,18 +361,18 @@ const Dashboard1 = ({
             </h2>
 
             <div className="mt-6 flex flex-col gap-4 ">
-              <Link to="/userlist">
-                <StatCard
-                  label="Total Users"
-                  value={totalUsers}
-                  color="#E9CFFC"
-                  // onClick={() => setPopUp("catalog generated")}
-                />
-              </Link>
-              <StatCard label="Total Search For Male" value={totalMale} color="#f4eeee" />
+              
+              <StatCard
+                label="Total Users"
+                value={totalUsers}
+                color="#E9CFFC"
+                // onClick={() => setPopUp("catalog generated")}
+              />
+              
+              <StatCard label="Total Search For Category" value={totalMale} color="#f4eeee" />
 
               <StatCard
-                label="Total Search For Female"
+                label="Total Search For Product"
                 value={totalFemale}
                 color="#D0C2E3"
 
@@ -384,7 +384,7 @@ const Dashboard1 = ({
           <div className="grid grid-cols-1 md:grid-cols-1 gap-2">
             <div className="bg-white rounded-lg shadow p-6  transition-shadow duration-300 ease-in-out">
               <h2 className="text-xl font-semibold text-gray-800 mb-3">
-                Top Services
+                Top Products
               </h2>
               <ul className="space-y-2">
                 {topServices?.map((item, index) => (
@@ -583,7 +583,7 @@ const AnalyticsDashboard = ({ analyticsData, totalStore, data, userCount }) => {
   return (
     <div className="grid md:grid-cols-3 grid-cols-2 gap-4">
       <StoreDetails
-        title="Stores"
+        title="Sellers"
         value={data?.totalStores || "00"}
         // icon={analyticsData?.todayReport?.catalog_generated > 0 ? "↑" : "↓"}
         // bgColor="bg-gradient-to-br from-red-300 to-red-100"
@@ -610,7 +610,7 @@ const AnalyticsDashboard = ({ analyticsData, totalStore, data, userCount }) => {
         textColor="text-orange-500"
       />
       <StoreDetails
-        title="Services"
+        title="Products"
         value={data?.totalServices || "00"}
         // icon="↓"
         // bgColor="bg-gradient-to-br from-amber-300 to-amber-100"
