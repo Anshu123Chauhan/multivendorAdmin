@@ -12,10 +12,11 @@ import { CiSearch, CiUser } from "react-icons/ci";
 import Input from "../components/inputContainer";
 import { IoSearch } from "react-icons/io5";
 import logo from "../assets/logo1.png";
-import { FaRegUserCircle } from "react-icons/fa";
+import { FaRegUserCircle, FaUserEdit  } from "react-icons/fa";
 import { TbLockPassword } from "react-icons/tb";
-import { RiAdminFill } from "react-icons/ri";
+import { RiUserAddFill } from "react-icons/ri";
 import { jwtDecode } from "jwt-decode";
+import { usePermission } from "./getPermission.js";
 
 const Header = ({ className }) => {
   const {
@@ -27,6 +28,9 @@ const Header = ({ className }) => {
     setIsMenuOpen,
   } = useUser();
   const [decodedToken, setDecodedToken] = useState(token);
+  const { userName }  = usePermission()
+
+
   useEffect(() => {
     const localToken = token || getCookie("zrotoken");
     if (localToken) {
@@ -107,7 +111,7 @@ const Header = ({ className }) => {
       <div className="flex items-end gap-2">
         <div className="hidden md:block">
           <h1 className="text-xs md:text-sm lg:text-xl font-medium capitalize hidden md:block">
-            Welcome Back, {decodedToken?.username}
+            Welcome Back, Hi {userName}
           </h1>
           <p className="text-zinc-400 text-xs">Today is {FormattedDate()}</p>
         </div>
@@ -118,9 +122,9 @@ const Header = ({ className }) => {
             alt="logo"
           />
         </NavLink>
-        <div className="capitalize bg-blue-50 border-[1px] border-blue-200 rounded-md hidden md:block py-1 px-2 md:px-4 text-blue-500 text-xs">
+        {/* <div className="capitalize bg-blue-50 border-[1px] border-blue-200 rounded-md hidden md:block py-1 px-2 md:px-4 text-blue-500 text-xs">
           Admin
-        </div>
+        </div> */}
       </div>
       {message?.type === "error" && <Error err={message?.message} />}
       <div className="flex items-center gap-2 lg:gap-4 relative">
@@ -143,7 +147,7 @@ const Header = ({ className }) => {
                 navigate("/addadmin");
               }}
             >
-              <RiAdminFill />
+              <RiUserAddFill  />
               Add More Admin
             </div>
             <div
@@ -154,6 +158,15 @@ const Header = ({ className }) => {
             >
               <TbLockPassword />
               Update Password
+            </div>
+            <div
+              className="text-red-500 flex items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
+              onClick={() => {
+                navigate("/updateProfile");
+              }}
+            >
+              <FaUserEdit  />
+              Update Profile
             </div>
 
             <div

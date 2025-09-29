@@ -9,6 +9,7 @@ export const FloatingInput = ({
   options = [],
   required = false,
   length,
+  disabled,
 }) => {
   const hasValue =
     value !== null && value !== undefined && value.toString().length > 0;
@@ -21,9 +22,15 @@ export const FloatingInput = ({
           id={name}
           value={value || ""}
           onChange={onChange}
+          disabled={disabled}
           autoComplete="new-password"
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none
-                     focus:outline-none focus:ring-0 peer relative"
+          className={`block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none
+              focus:outline-none focus:ring-0 peer relative
+              ${
+                disabled
+                  ? "text-gray-400 border-gray-200 cursor-not-allowed"
+                  : "text-gray-900 border-gray-300"
+              }`}
         >
           {options.map((opt, idx) => (
             <option key={idx} value={opt.value}>
@@ -32,8 +39,7 @@ export const FloatingInput = ({
           ))}
         </select>
       ) : type === "radio" ? (
-       <div>
-          
+        <div>
           <div className="flex gap-6">
             {options.map((opt, idx) => (
               <div key={idx} className="flex items-center gap-2">
@@ -42,7 +48,9 @@ export const FloatingInput = ({
                   name={name}
                   value={opt.value}
                   checked={value === opt.value}
-                  onChange={() => onChange({ target: { name, value: opt.value } })}
+                  onChange={() =>
+                    onChange({ target: { name, value: opt.value } })
+                  }
                   className="text-[#D4550B] focus:ring-[#D4550B] border"
                 />
                 <span className="text-gray-700">{opt.label}</span>
@@ -50,15 +58,19 @@ export const FloatingInput = ({
             ))}
           </div>
         </div>
-
-      ) :type === "file" ? (
+      ) : type === "file" ? (
         <input
           type="file"
           name={name}
           id={name}
           onChange={onChange}
-          className="block w-full text-sm text-gray-900 bg-transparent rounded border border-gray-300 cursor-pointer
-                     focus:outline-none focus:ring-0 focus:border-gray-300"
+          disabled={disabled}
+          className={`block w-full text-sm text-gray-900 bg-transparent rounded border border-gray-300 cursor-pointer
+                     focus:outline-none focus:ring-0 focus:border-gray-300 ${
+                       disabled
+                         ? "text-gray-400 border-gray-200 cursor-not-allowed"
+                         : "text-gray-900 border-gray-300"
+                     }`}
         />
       ) : (
         <input
@@ -69,18 +81,23 @@ export const FloatingInput = ({
           onChange={onChange}
           maxLength={length}
           autoComplete="new-password"
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none
-                     focus:outline-none focus:ring-0 peer placeholder-transparent relative"
+          className={`block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none
+                     focus:outline-none focus:ring-0 peer placeholder-transparent relative ${
+                       disabled
+                         ? "text-gray-400 border-gray-200 cursor-not-allowed"
+                         : "text-gray-900 border-gray-300"
+                     }`}
           style={{
             WebkitBoxShadow: "0 0 0px 1000px transparent inset",
             WebkitTextFillColor: "inherit",
           }}
           placeholder=" "
+          disabled={disabled}
         />
       )}
 
       {type !== "file" && (
-          <label
+        <label
           htmlFor={name}
           className={`absolute text-sm duration-500 transform top-3 -z-10 origin-[0]
             ${hasValue ? "-translate-y-3 text-blue-600 z-10" : "text-gray-500"}

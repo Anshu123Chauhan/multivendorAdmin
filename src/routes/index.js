@@ -43,8 +43,6 @@ import PoliciesPage from "../pages/policy.js";
 
 import UpdatePermission from "../pages/updatePermission.js";
 import CustomerPasswordReset from "../pages/customerPasswordReset.js";
-import AdminProfile from "../pages/adminProfile.js";
-import EditAdminDetails from "../pages/editAdminDetails.js";
 
 import Welcome from "../pages/welcome.js";
 
@@ -69,7 +67,6 @@ import ChangePassword from "../pages/changePassword.js";
 import AddImage from "../pages/addImageService.js";
 import AddVideoService from "../pages/addVideoService.js";
 import Userlist from "../pages/userlist.js";
-import EditAdmin from "../pages/editAdmin.js";
 import Seller from "../pages/seller.js";
 import AddSeller from "../pages/addSeller.js";
 import AddUser from "../pages/addUser.js";
@@ -93,6 +90,7 @@ import CustomerDetails from "../pages/customerDetails.js";
 import Settings from "../pages/settings.js";
 import ProductDetails from "../pages/productDetails.js";
 import SellerDetails from "../pages/sellerDetails.js";
+import EditProfile from "../pages/editProfile.js";
 
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
@@ -133,19 +131,8 @@ const Router = () => {
         path="/addbanner"
         element={<PrivateRoute element={<AddBanner />} />}
       />
-      <Route
-        path="/editadmin/:id"
-        element={<PrivateRoute element={<EditAdmin />} />}
-      />
-      <Route path="/account" element={<PrivateRoute element={<Account />} />} />
-      <Route
-        path="/profile"
-        element={<PrivateRoute element={<AdminProfile />} />}
-      />
-      <Route
-        path="/profile/:adminobjId/edit"
-        element={<PrivateRoute element={<EditAdminDetails />} />}
-      />
+      
+      <Route path="/account" element={<PrivateRoute element={<Account />} />} />     
       <Route
         path="/dashboard"
         element={
@@ -466,6 +453,7 @@ const Router = () => {
       <Route path="/editSeller/:id" element={<PrivateRoute element={<EditSeller />} />} />
       <Route path="/addProduct" element={<PrivateRoute element={<AddProduct />} />} />
       <Route path="/product" element={<PrivateRoute element={<Product />} />} />
+      <Route path="/updateProfile" element={<PrivateRoute element={<EditProfile />} />} />
       <Route path="/editProduct/:id" element={<PrivateRoute element={<EditProduct />} />} />
       <Route path="/editRole/:id" element={<PrivateRoute element={<EditRole />} />} />
       <Route path="/addAttribute" element={<PrivateRoute element={<AddAttribute />} />} />
