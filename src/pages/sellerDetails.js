@@ -20,6 +20,7 @@ import {
   Line,
 } from "recharts";
 import { getCookie } from "../config/webStorage.js";
+import BackHeader from "../components/backHeader.js";
 
 const SellerDetails = () => {
   const [seller, setSeller] = useState(null);
@@ -35,10 +36,9 @@ const SellerDetails = () => {
         const res = await axios.get(`${apiurl}/seller/get/${id}`, {
           headers: { Authorization: token },
         });
-        if (res.status === 200) setSeller(res.data.seller);
+        if (res.data.success === true) setSeller(res.data.seller);
       } catch (error) {
         console.error("Error fetching seller:", error);
-        toast.error("Failed to fetch seller details");
       } finally {
         setLoading(false);
       }
@@ -133,7 +133,14 @@ const SellerDetails = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen ">
+      <div className="min-h-screen bg-slate-50 p-4 ">
+        <div className="mb-4">
+          <BackHeader
+            title="Seller Details"
+            backButton={true}
+            link="/sellerList"
+          />
+        </div>
         <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-row md:flex-row items-center gap-6 border-b pb-6">
             <img

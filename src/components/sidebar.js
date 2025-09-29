@@ -60,9 +60,10 @@ const decodedToken = useMemo(() => {
         location: "/orders",
         permission: "order_manage",
         // submenu: [
-        //   { title: "Abandoned checkouts", icon: <IoIosPeople />, location: "/orders/abandoned" },
-        // ],
-      },
+          //   { title: "Abandoned checkouts", icon: <IoIosPeople />, location: "/orders/abandoned" },
+          // ],
+        },
+        { title: "settings", icon: <IoSettingsOutline />, location: "/settings", permission: "settings" },
       // { title: "Price Code", icon: <LiaRupeeSignSolid />, location: "/pricemapping", permission: "customers" },
       // { title: "Image Mapping", icon: <GoImage />, location: "/imagemapping", permission: "customers" },
       // { title: "Video Mapping", icon: <IoVideocamSharp />, location: "/videomapping", permission: "customers" },
@@ -78,7 +79,7 @@ const decodedToken = useMemo(() => {
     }
    
     if (decodedToken?.userType === "Seller") {
-      const exclude = ["Seller", "Category", "Sub Category", "Brand", "Filter","Banner"];
+      const exclude = ["Seller", "Category", "Sub Category", "Brand", "Filter","Banner", "settings"];
       menu = menu.filter((item) => !exclude.includes(item.title));
     }
 
@@ -161,7 +162,7 @@ const decodedToken = useMemo(() => {
         ))}
       </div>
 
-      <NavLink to={"/settings"}>
+      {/* <NavLink to={"/settings"}>
         <button
           onClick={() => setIsSettingOpen(true)}
           className="text-black px-2 py-2 rounded-lg w-full flex items-center gap-1.5 border-transparent capitalize text-sm border hover:border-orange-300 hover:text-orange-500 mt-12 mb-4"
@@ -170,7 +171,7 @@ const decodedToken = useMemo(() => {
             <IoSettingsOutline className="text-xl" /> Settings
           </div>
         </button>
-      </NavLink>
+      </NavLink> */}
     </div>
   );
 };

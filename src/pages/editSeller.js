@@ -262,6 +262,7 @@ const EditSeller = () => {
                 error={errors.phone}
                 required={true}
                 length={10}
+                disabled={true}
               />
               <FloatingInput
                 label="Email"
@@ -271,6 +272,7 @@ const EditSeller = () => {
                 onChange={handleChange}
                 error={errors.email}
                 required={true}
+                disabled={true}
               />
             </div>
 
@@ -291,6 +293,7 @@ const EditSeller = () => {
                   { value: "VoterID", label: "Voter ID" },
                   { value: "DL", label: "Driving License" },
                 ]}
+                 disabled={true}
               />
 
               <FloatingInput
@@ -301,6 +304,7 @@ const EditSeller = () => {
                 onChange={handleChange}
                 error={errors.identityProofNumber}
                 required={true}
+                disabled={true}
               />
             </div>
 
@@ -314,6 +318,7 @@ const EditSeller = () => {
                 onChange={handleChange}
                 error={errors.gstNumber}
                 required={true}
+                disabled={true}
               />
               <FloatingInput
                 label="Account Holder Name"
