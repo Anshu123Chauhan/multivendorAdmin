@@ -50,8 +50,8 @@ const decodedToken = useMemo(() => {
 
       { title: "Product", icon: <RiServiceLine />, location: "/product" },
 
-      { title: "Services", icon: <RiServiceLine />, location: "/service" },
-      { title: "Filter", icon: <CiFilter />, location: "/filter", permission: "filter" },
+      // { title: "Services", icon: <RiServiceLine />, location: "/service" },
+      // { title: "Filter", icon: <CiFilter />, location: "/filter", permission: "filter" },
       { title: "Banner", icon: <IoIosImages />, location: "/banner", permission: "banner" },
       { title: "customers", icon: <IoIosPeople />, location: "/customer", permission: "customer" },
       {
