@@ -58,10 +58,10 @@ const decodedToken = useMemo(() => {
         title: "orders",
         icon: <RiShoppingCart2Line />,
         location: "/orders",
-        permission: "order_manage",
+        permission: "orders",
         // submenu: [
-          //   { title: "Abandoned checkouts", icon: <IoIosPeople />, location: "/orders/abandoned" },
-          // ],
+        //     { title: "Abandoned checkouts", icon: <IoIosPeople />, location: "/orders/abandoned" },
+        //   ],
         },
         { title: "settings", icon: <IoSettingsOutline />, location: "/settings", permission: "settings" },
       // { title: "Price Code", icon: <LiaRupeeSignSolid />, location: "/pricemapping", permission: "customers" },
