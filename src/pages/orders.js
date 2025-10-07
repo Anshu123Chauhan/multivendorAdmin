@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { usePermission } from "../components/getPermission";
 import ActionButton from "../components/actionBtn";
 import { CiEdit } from "react-icons/ci";
+import { AiOutlineEye } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
 
 const Orders = () => {
@@ -140,15 +141,11 @@ const Orders = () => {
                   <tr>
                     {[
                       "SN.",
-                      "Order Number",
-                      "Products",
-                      "Subtotal",
-                      "Total",
+                      "Order Id",
+                      "Total Itmes",
                       "Payment Method",
                       "Payment Status",
-                      "Shipping Method",
-                      "Shipping Address",
-                      "Status",
+                      "Total Rs",
                       "Created At",
                       "Action",
                     ].map((header, index) => (
@@ -180,65 +177,43 @@ const Orders = () => {
 
                       {/* Full Order ID */}
 
-                      <td className="px-4 py-3 truncate">
-                        {order.orderNumber}
-                      </td>
+                      <td className="px-4 py-3 truncate">{order.orderId}</td>
 
                       {/* Products */}
-                      <td className="px-4 py-3">
-                        <ul className="list-disc space-y-1">
-                          {order.items.map((item, i) => (
-                            <li key={i} className="truncate">
-                              {item.name} × {item.qty} — ₹{item.price}
-                            </li>
-                          ))}
-                        </ul>
-                      </td>
-
-                      <td className="px-4 py-3">₹{order.subtotal}</td>
+                      <td className="px-4 py-3">{order.totalItems}</td>
+                      <td className="px-4 py-3">{order.paymentMethod}</td>
+                      <td className="px-4 py-3">₹{order.paymentStatus}</td>
                       <td className="px-4 py-3 font-semibold">
                         ₹{order.total}
                       </td>
-                      <td className="px-4 py-3 capitalize">
-                        {order.paymentMethod}
-                      </td>
-                      <td className="px-4 py-3 capitalize">
-                        {order.paymentStatus}
-                      </td>
-                      <td className="px-4 py-3 capitalize">
-                        {order.shippingMethod}
-                      </td>
 
-                      {/* Shipping Address */}
-                      <td className="px-4 py-3 min-w-[220px]">
-                        <div className="text-gray-800 text-sm">
-                          <p className="font-medium">
-                            {order.shippingAddress?.recipientName || "N/A"}
-                          </p>
-                          <p>{order.shippingAddress?.phone}</p>
-                          <p className="text-xs">
-                            {order.shippingAddress?.street},{" "}
-                            {order.shippingAddress?.city},{" "}
-                            {order.shippingAddress?.state} -{" "}
-                            {order.shippingAddress?.pincode}
-                          </p>
-                        </div>
-                      </td>
-
-                      <td className="px-4 py-3 capitalize">{order.status}</td>
                       <td className="px-4 py-3">
-                        <div>
-                          <div>
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </div>
-                          <div className="text-gray-500 text-xs">
-                            {new Date(order.createdAt).toLocaleTimeString()}
-                          </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {new Date(order.date).toLocaleDateString("en-IN", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </span>
+                          <span className="text-gray-500 text-xs">
+                            {new Date(order.date).toLocaleTimeString("en-IN", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })}
+                          </span>
                         </div>
                       </td>
 
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
+                          <AiOutlineEye
+                            className="rounded-md text-blue-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 text-2xl p-1"
+                            onClick={() =>
+                              navigate(`/order-details/${order.orderId}`)
+                            }
+                          />
                           <CiEdit
                             className="rounded-md text-green-400 cursor-pointer hover:bg-green-400 hover:text-white bg-green-50 border border-green-200 text-2xl p-1"
                             //   onClick={onEdit}
