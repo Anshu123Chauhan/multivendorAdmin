@@ -48,41 +48,100 @@ const OrderDetails = () => {
 
   const downloadInvoice = (order) => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-    doc.setFontSize(16);
-    doc.text(`Invoice for Order #${order.orderNumber}`, 20, 20);
+    // 🧾 Header
+    doc.setFontSize(18);
+    doc.text("INVOICE", pageWidth / 2, 20, { align: "center" });
 
     doc.setFontSize(12);
-    doc.text(`Customer: ${order.shippingAddress.recipientName}`, 20, 40);
-    doc.text(`Phone: ${order.shippingAddress.phone}`, 20, 50);
+    doc.text(`Order No : ${order.orderNumber}`, 20, 35);
     doc.text(
-      `Address: ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.pincode}, ${order.shippingAddress.country}`,
-      20,
-      60,
-      { maxWidth: 170 }
+      `Date : ${new Date(order.createdAt).toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })}`,
+      pageWidth - 20,
+      35,
+      { align: "right" }
     );
 
-    doc.text("Items:", 20, 80);
+    // Customer Details
+    doc.setFontSize(14);
+    doc.setFont("bold");
+    doc.text("Customer Details", 20, 50);
+    doc.setFontSize(11);
+    doc.text(`Name : ${order.shippingAddress.recipientName}`, 20, 58);
+    doc.text(`Phone : ${order.shippingAddress.phone}`, 20, 65);
+    doc.text(
+      `Address : ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state} - ${order.shippingAddress.pincode}, ${order.shippingAddress.country}`,
+      20,
+      72,
+      { maxWidth: pageWidth - 40 }
+    );
+
+    // Items Table Header
+    let startY = 90;
+    doc.setFontSize(13);
+    doc.setFont("bold");
+    doc.text("Items Ordered", 20, startY);
+
+    startY += 10;
+    doc.setFontSize(11);
+    doc.setFillColor(240, 240, 240);
+    doc.rect(20, startY - 6, pageWidth - 40, 8, "F");
+
+    const qtyX = pageWidth - 65;
+    const priceX = pageWidth - 45;
+    const totalX = pageWidth - 25;
+
+    doc.text("S.No", 25, startY);
+    doc.text("Item Name", 45, startY);
+    doc.text("Qty", qtyX, startY, { align: "right" });
+    doc.text("Price", priceX, startY, { align: "right" });
+    doc.text("Total", totalX, startY, { align: "right" });
+
+    // Items Table Body
+    startY += 6;
     order.items.forEach((item, index) => {
-      doc.text(
-        `${index + 1}. ${item.name} | Qty: ${item.qty} | Price: ₹${
-          item.price
-        } | Total: ₹${item.price * item.qty}`,
-        25,
-        90 + index * 10
-      );
+      const y = startY + index * 8;
+      doc.text(`${index + 1}`, 25, y);
+      doc.text(item.name, 45, y, { maxWidth: 80 });
+
+      doc.text(`${item.qty}`, qtyX, y, { align: "right" });
+      doc.text(`Rs ${item.price}`, priceX, y, { align: "right" });
+      doc.text(`Rs ${item.price * item.qty}`, totalX, y, { align: "right" });
     });
 
-    doc.text(
-      `Total Amount: ₹${order.total}`,
-      20,
-      90 + order.items.length * 10 + 10
-    );
-    doc.text(
-      "Thank you for your purchase!",
-      20,
-      90 + order.items.length * 10 + 20
-    );
+    // Totals Section
+    const totalY = startY + order.items.length * 8 + 15;
+    doc.setFontSize(12);
+
+    doc.text("Subtotal:", priceX, totalY, { align: "right" });
+    doc.text(`Rs ${order.subtotal || order.total}`, totalX, totalY, {
+      align: "right",
+    });
+
+    doc.text("Shipping:", priceX, totalY + 8, { align: "right" });
+    doc.text(`Rs ${order.shippingCharges || 0}`, totalX, totalY + 8, {
+      align: "right",
+    });
+
+    doc.setFontSize(13);
+    doc.setFont(undefined, "bold");
+    doc.text("Total:", priceX, totalY + 18, { align: "right" });
+    doc.text(`Rs ${order.total}`, totalX, totalY + 18, { align: "right" });
+    doc.setFont(undefined, "normal");
+
+    // Footer
+    doc.setFontSize(11);
+    doc.text("Thank you for shopping with us!", pageWidth / 2, totalY + 40, {
+      align: "center",
+    });
 
     doc.save(`Invoice_${order.orderNumber}.pdf`);
   };
@@ -220,7 +279,7 @@ const OrderDetails = () => {
                         "https://via.placeholder.com/80"
                       }
                       alt={item.name}
-                      className="w-16 h-16 rounded object-cover border"
+                      className="w-40 h-40 rounded-md shadow-xl object-cover border"
                     />
                     <div>
                       <p className="font-medium text-gray-800">{item.name}</p>
