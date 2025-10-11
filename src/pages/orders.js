@@ -216,7 +216,8 @@ const Orders = () => {
                           />
                           <CiEdit
                             className="rounded-md text-green-400 cursor-pointer hover:bg-green-400 hover:text-white bg-green-50 border border-green-200 text-2xl p-1"
-                            //   onClick={onEdit}
+                              onClick={()=>
+                              navigate(`/edit-order/${order.orderId}`)}
                           />
                           <MdDeleteForever
                             className="rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 text-2xl p-1"

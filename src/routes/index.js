@@ -93,6 +93,7 @@ import SellerDetails from "../pages/sellerDetails.js";
 import EditProfile from "../pages/editProfile.js";
 import Orders from "../pages/orders.js";
 import OrderDetails from "../pages/orderDetails.js";
+import EditOrderDetails from "../pages/editorderDetails.js"
 
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
@@ -457,6 +458,7 @@ const Router = () => {
       <Route path="/product" element={<PrivateRoute element={<Product />} />} />
       <Route path="/orders" element={<PrivateRoute element={<Orders />} />} />
       <Route path="/order-details/:id" element={<PrivateRoute element={<OrderDetails />} />} />
+      <Route path="/edit-order/:id" element={<PrivateRoute element={<EditOrderDetails />} />} />
       <Route path="/updateProfile" element={<PrivateRoute element={<EditProfile />} />} />
       <Route path="/editProduct/:id" element={<PrivateRoute element={<EditProduct />} />} />
       <Route path="/editRole/:id" element={<PrivateRoute element={<EditRole />} />} />
