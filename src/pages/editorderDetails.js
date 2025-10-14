@@ -226,9 +226,9 @@ const EditOrderDetails = () => {
                 <FaTruck className="text-orange-500" /> Shipping
               </h2>
               <p className="text-gray-700">{order.status}</p>
-              {order.trackingNumber && (
+              {order.trackingUrl && (
                 <p className="text-sm text-gray-500">
-                  Tracking #: {order.trackingNumber}
+                  Tracking URL: {order.trackingUrl}
                 </p>
               )}
               {order.carrier && (
@@ -242,8 +242,8 @@ const EditOrderDetails = () => {
               <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
                 <FaCreditCard className="text-orange-500" /> Payment
               </h2>
-              <p className="text-gray-800 font-medium">{order.paymentStatus}</p>
-              <p className="text-sm text-gray-500">{order.paymentMethod}</p>
+                <p className="text-gray-800 font-medium">{order.paymentMethod=="cod"?"Pending":"Paid"}</p>
+              <p className="text-sm text-gray-500">{order.paymentMethod=="cod"?"COD":order.paymentMethod}</p>
               <p className="text-gray-800 font-semibold mt-2">
                 Total: ₹{order.total}
               </p>

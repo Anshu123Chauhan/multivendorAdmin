@@ -146,6 +146,7 @@ const Orders = () => {
                       "Payment Method",
                       "Payment Status",
                       "Total Rs",
+                      "Seller",
                       "Created At",
                       "Action",
                     ].map((header, index) => (
@@ -182,9 +183,12 @@ const Orders = () => {
                       {/* Products */}
                       <td className="px-4 py-3">{order.totalItems}</td>
                       <td className="px-4 py-3">{order.paymentMethod}</td>
-                      <td className="px-4 py-3">₹{order.paymentStatus}</td>
+                      <td className="px-4 py-3">{order.paymentStatus=="not_required"?"Pending":"Paid"}</td>
                       <td className="px-4 py-3 font-semibold">
                         ₹{order.total}
+                      </td>
+                       <td className="px-4 py-3 font-semibold">
+                        {order.sellerName}
                       </td>
 
                       <td className="px-4 py-3">
