@@ -206,7 +206,7 @@ const Product = () => {
                     >
                       <td className="relative px-6 py-3">{index + 1}</td>
                         <td className="relative px-6 py-3 capitalize">
-                        {product?.vendor?.fullName||"Admin"}
+                        {product?.sellerName||"Admin"}
                         </td>
                         <td className="relative px-6 py-3 capitalize">
                         <img src={product?.images[0]} className="w-20 h-20"/>
