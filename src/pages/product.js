@@ -182,6 +182,7 @@ const Product = () => {
                   <tr>
                     {[
                       "SN.",
+                      "Vendor",
                       "Image",
                       "Name",
                       "Category",
@@ -204,6 +205,9 @@ const Product = () => {
                       className="border-t relative overflow-hidden group hover:bg-gray-50 transition-all duration-500"
                     >
                       <td className="relative px-6 py-3">{index + 1}</td>
+                        <td className="relative px-6 py-3 capitalize">
+                        {product?.vendor?.fullName||"Admin"}
+                        </td>
                         <td className="relative px-6 py-3 capitalize">
                         <img src={product?.images[0]} className="w-20 h-20"/>
                       </td>

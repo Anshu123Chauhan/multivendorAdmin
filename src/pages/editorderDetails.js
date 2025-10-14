@@ -17,6 +17,7 @@ import { apiurl } from "../config/config";
 import { getCookie } from "../config/webStorage";
 import { jsPDF } from "jspdf";
 import { FloatingInput } from "../components/floatingInput";
+import { toast } from "react-toastify";
 
 const EditOrderDetails = () => {
   const { id } = useParams();
@@ -156,7 +157,35 @@ const EditOrderDetails = () => {
         <p className="text-center mt-10 text-gray-500">No order found.</p>
       </Layout>
     );
-
+    const handleChange = async (e) => {
+    const { name, value } = e.target;
+    console.log(name,value)
+    setOrder((prev) => ({
+      ...prev,
+      meta: order.name,
+      [name]: value,
+    }));
+  };
+   
+  const orderupdate=async()=>{
+  try {
+      const response = await axios.put(`${apiurl}/admin/order/tracking/${id}`, {status:order.status, trackingUrl:order.trackingUrl},{
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response.data)
+      if (response.data.success) {
+        fetchOrder();
+        toast.success("Order Status updated successfully!");
+      }
+    } catch (error) {
+      console.error("Error fetching order:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 py-6 px-4">
@@ -320,20 +349,34 @@ const EditOrderDetails = () => {
             </div>
           </div>
           <div className="bg-white shadow rounded-lg p-4">
-              <p className="font-semibold text-gray-800 text-lg">Update Order Status</p>
+            <div className="w-1/2">
               
+              <div className="grid md:grid-cols-1 gap-3">
+              <p className="font-semibold text-gray-800 text-lg">Update Order Status</p>
               <FloatingInput
                 type="select"
-                name="orderstatus"
+                name="status"
                 value={order.status}
+                onChange={handleChange}
                 options={[
                   { value: "", label: "" },
                   { value: "placed", label: "Placed" },
                   { value: "shipped", label: "Shipped" },
                   { value: "cancelled", label: "Cancelled" },
+                  { value: "out_for_delivery", label: "Out For Delivery" },
                   { value: "delivered", label: "Delivered" },
-                ]}
-                            />
+                ]}/>
+                <p className="font-semibold text-gray-800 text-lg">Tracking URL</p>
+                <FloatingInput
+                  // label="Tracking Url"
+                  type="textarea"
+                  name="trackingUrl"
+                  value={order.trackingUrl}
+                  onChange={handleChange}
+                />
+                </div>
+                <button className="bg-[#000] hover:bg-[#e7c984] hover:text-[#000]  text-[#fff] w-[150px] p-2 rounded-md" onClick={orderupdate}>Update</button>
+            </div>
           </div>
         </div>
       </div>
