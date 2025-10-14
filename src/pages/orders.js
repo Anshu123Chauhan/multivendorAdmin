@@ -147,6 +147,7 @@ const Orders = () => {
                       "Payment Status",
                       "Total Rs",
                       "Seller",
+                      "Status",
                       "Created At",
                       "Action",
                     ].map((header, index) => (
@@ -190,6 +191,8 @@ const Orders = () => {
                        <td className="px-4 py-3 font-semibold">
                         {order.sellerName}
                       </td>
+
+                      <td className="px-4 py-3 font-semibold capitalize">{order.orderStatus}</td>
 
                       <td className="px-4 py-3">
                         <div className="flex flex-col">
