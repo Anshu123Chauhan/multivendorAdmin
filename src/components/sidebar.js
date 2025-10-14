@@ -55,10 +55,10 @@ const decodedToken = useMemo(() => {
       { title: "Banner", icon: <IoIosImages />, location: "/banner", permission: "banner" },
       { title: "customers", icon: <IoIosPeople />, location: "/customer", permission: "customer" },
       {
-        title: "orders",
+        title: "Order",
         icon: <RiShoppingCart2Line />,
         location: "/orders",
-        permission: "orders",
+        permission: "order",
         // submenu: [
         //     { title: "Abandoned checkouts", icon: <IoIosPeople />, location: "/orders/abandoned" },
         //   ],
