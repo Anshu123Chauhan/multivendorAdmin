@@ -1,162 +1,245 @@
-import React, { useState, useEffect, useMemo } from "react";
-import Layout, { Container } from "../components/layout";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  FaUserCircle,
+  FaPhoneAlt,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaBox,
+  FaCheckCircle,
+  FaClock,
+  FaTimesCircle,
+  FaCreditCard,
+  FaRupeeSign,
+  FaRegStickyNote,
+} from "react-icons/fa";
+import Layout from "../components/layout";
+import { useParams } from "react-router-dom";
+import { getCookie } from "../config/webStorage";
 import axios from "axios";
 import { apiurl } from "../config/config";
-import { useUser } from "../config/userProvider";
 import BackHeader from "../components/backHeader";
-import { Image } from "antd";
-import { getCookie } from "../config/webStorage";
-import { toast } from "react-toastify";
-import { jwtDecode } from "jwt-decode";
 
-function CustomerDetails() {
-  const navigate = useNavigate();
-  const { userData } = useUser();
-  const customerId = useParams();
-  const id=customerId?.id
-  // console.log(id)
-  // const {id} = storeId;
-    const token = getCookie("zrotoken");
-    const decodedToken = useMemo(() => {
-      if (!token) return null;
-      try {
-        return jwtDecode(token);
-      } catch (error) {
-        console.error("Invalid token:", error);
-        return null;
-      }
-    }, [token]);
-    
+const CustomerDetails = () => {
+  const { id } = useParams();
+  const token = getCookie("zrotoken");
 
-  const [customerDetails, setcustomerDetails] = useState();
-  const [loading, setLoading] = useState(false);
+  const [customer, setCustomer] = useState(null);
+  const [orders, setOrders] = useState([]);
 
-
-  const fetchcustomerList = async () => {
-   
-    try {
-          const res = await axios.get(`${apiurl}/admin/customer-get/${id}`, {
-            headers: { Authorization: token},
-          });
-          // console.log(res)
-          if (res.status === 200) {
-            setcustomerDetails(res.data.customer);
-          }
-        } catch (error) {
-          console.error("Error fetching customer:", error);
-          toast.error("Failed to fetch customer details");
-        } finally {
-          setLoading(false);
-        }
+  const statusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "completed":
+        return "text-green-600 bg-green-100";
+      case "pending":
+        return "text-yellow-600 bg-yellow-100";
+      case "cancelled":
+        return "text-red-600 bg-red-100";
+      case "placed":
+        return "text-blue-600 bg-blue-100";
+      default:
+        return "text-gray-600 bg-gray-100";
+    }
   };
- useEffect(() => {
-  // console.log("storeId", id);
 
-  if (decodedToken?.userType === "Admin") {
-    fetchcustomerList();
+  const fetchCustomer = async () => {
+    try {
+      const response = await axios.get(`${apiurl}/admin/customer-get/${id}`, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setCustomer(response.data.customer);
+        setOrders(response.data.orders || []);
+      }
+    } catch (error) {
+      console.error("Error fetching customer:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomer();
+  }, []);
+
+  if (!customer) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center text-gray-600">
+          Loading customer details...
+        </div>
+      </Layout>
+    );
   }
-}, [id, decodedToken]); 
 
+  const customerAddress =
+    customer?.addresses?.length > 0
+      ? `${customer.addresses[0].address}, ${customer.addresses[0].city}, ${customer.addresses[0].state}`
+      : "N/A";
 
+  const totalOrders = orders.length;
+  const completedOrders = orders.filter((o) => o.status === "delivered").length;
+  const pendingOrders = totalOrders-completedOrders;
+  const cancelledOrders = orders.filter((o) => o.status === "cancelled").length;
 
   return (
     <Layout>
-      <Container>
-        <BackHeader
-          backButton={true}
-          link="/customers"
-          title="Customer Details"
-          rightSide={
-            <div className="flex justify-between">
-              <span
-                className={`font-semibold ${
-                  customerDetails?.data?.status === "ACTIVE"
-                    ? "text-green-600" // Green for ACTIVE
-                    : "text-red-600" // Red for INACTIVE
-                }`}
-              >
-                {customerDetails?.data?.status}
-              </span>
-            </div>
-          }
-        />
+      <div className="min-h-screen bg-gray-50 px-4 py-8 flex flex-col items-center">
+        <BackHeader backButton={true} link="/customer" title="Back" />
+        <div className="w-full max-w-6xl text-center mb-8 transition-all">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+            Customer Details
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Detailed customer profile & order information
+          </p>
+        </div>
 
-        <div className="flex flex-col h-[90%] w-full  gap-y-8 mt-10 bg-white overflow-scroll">
-          <div className="flex h-full justify-between">
-            <div className="w-[40%] p-3">
-              {customerDetails &&
-                (
-                // <img
-                //   src={customerDetails?.data?.provider_descriptor?.images}
-                //   alt="Store Symbol"
-                //   className="w-full  object-contain rounded-lg shadow-sm"
-                // />
-                <>
-                <p className="text-md text-center p-2 font-[600]">Customer Image</p>
-                <Image
-                  className="max-w-full max-h-full object-contain rounded-lg  shadow-sm"
-                  src={
-                    customerDetails?.image ||"http://res.cloudinary.com/dv5del8nh/image/upload/v1758709597/zwyubadp5ra0wbzsl6uu.png"
-                  }
-                  preview={{
-                    maskClassName: "w-full",
-                    getContainer: false,
-                    src: `${
-                       customerDetails?.image || "http://res.cloudinary.com/dv5del8nh/image/upload/v1758709597/zwyubadp5ra0wbzsl6uu.png"
-                      
-                    }`,
-                  }}
-                />
-               
-                
-                </>
-              ) }
+        <div className="w-full max-w-6xl bg-white shadow-lg rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 mb-6 transition hover:shadow-xl hover:scale-[1.01]">
+          <div className="text-7xl text-gray-400">
+            <FaUserCircle />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {customer.name}
+            </h2>
+            <p className="text-gray-500">{customer.email}</p>
+            <p className="text-xs text-gray-500">
+              Joined: {new Date(customer.createdAt).toLocaleDateString()}
+            </p>
+            <span
+              className={`inline-block mt-2 px-3 py-1 text-sm rounded-xl transition bg-green-100 text-green-700`}
+            >
+              Active
+            </span>
+          </div>
+        </div>
+
+        <div className="w-full max-w-6xl bg-white shadow-lg rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 transition hover:shadow-xl hover:scale-[1.01]">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-blue-50 rounded-full text-blue-600">
+              <FaPhoneAlt />
             </div>
-            <div className="w-[60%] h-full overflow-auto pl-10 ">
-              <h2 className="text-2xl font-semibold text-orange-300 mb-4">
-                Customer Information
-              </h2>
-              <div className="grid grid-cols-4 gap-x-4 gap-y-4">
-                {[
-                  {
-                    label: "Customer Name",
-                    value: customerDetails?.name,
-                  },
-                  {
-                    label: "Email",
-                    value: customerDetails?.email,
-                  },
-                  {
-                    label: "Phone Number",
-                    value: customerDetails?.phone,
-                  },
-                  
-                  
-                ].map(
-                  (item, index) =>
-                    item.value && (
-                      <React.Fragment key={index}>
-                        <span className="text-gray-600 font-semibold col-span-1">
-                          {item.label}:
-                        </span>
-                        <span className="text-gray-900 col-span-3">
-                          {item.value || (
-                            <span className="italic text-gray-400">
-                              Not available
-                            </span>
-                          )}
-                        </span>
-                      </React.Fragment>
-                    )
-                )}
-              </div>
+            <div>
+              <p className="text-sm text-gray-500">Phone</p>
+              <p className="font-medium text-gray-800">{customer.phone}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-blue-50 rounded-full text-blue-600">
+              <FaEnvelope />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Email</p>
+              <p className="font-medium text-gray-800">{customer.email}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 sm:col-span-2 lg:col-span-1">
+            <div className="p-3 bg-blue-50 rounded-full text-blue-600">
+              <FaMapMarkerAlt />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Address</p>
+              <p className="font-medium text-gray-800">{customerAddress}</p>
             </div>
           </div>
         </div>
-      </Container>
+
+        <div className="w-full max-w-6xl grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-3 hover:shadow-xl hover:scale-[1.01]">
+            <FaBox className="text-blue-600 text-2xl" />
+            <div>
+              <p className="text-gray-500 text-sm">Total Orders</p>
+              <p className="text-lg font-semibold">{totalOrders}</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-3 transition hover:shadow-xl hover:scale-[1.01]">
+            <FaClock className="text-yellow-600 text-2xl" />
+            <div>
+              <p className="text-gray-500 text-sm">Pending</p>
+              <p className="text-lg font-semibold">{pendingOrders}</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-3 transition hover:shadow-xl hover:scale-[1.01]">
+            <FaCheckCircle className="text-green-600 text-2xl" />
+            <div>
+              <p className="text-gray-500 text-sm">Delivered</p>
+              <p className="text-lg font-semibold">{completedOrders}</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-3 transition hover:shadow-xl hover:scale-[1.01]">
+            <FaTimesCircle className="text-red-600 text-2xl" />
+            <div>
+              <p className="text-gray-500 text-sm">Cancelled</p>
+              <p className="text-lg font-semibold">{cancelledOrders}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full max-w-6xl bg-white rounded-2xl shadow-lg p-6 overflow-x-auto hover:shadow-md transition">
+          <h3 className="text-xl font-semibold mb-4">Order History</h3>
+          <table className="w-full min-w-[650px] text-left border-collapse">
+            <thead>
+              <tr className="text-gray-600 border-b">
+                <th className="py-2 px-3">Order Number</th>
+                <th className="py-2 px-3">Date</th>
+                <th className="py-2 px-3">Status</th>
+                <th className="py-2 px-3">Total</th>
+                <th className="py-2 px-3">Items</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.length > 0 ? (
+                orders.map((order) => (
+                  <tr
+                    key={order._id}
+                    className="border-b last:border-0 hover:bg-gray-50 transition"
+                  >
+                    <td className="py-2 px-3 font-medium">
+                      {order.orderNumber}
+                    </td>
+                    <td className="py-2 px-3">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="py-2 px-3">
+                      <span
+                        className={`px-2 py-1 text-sm rounded-lg ${statusColor(
+                          order.status
+                        )}`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="py-2 px-3 font-semibold">
+                      ₹{order.total.toLocaleString()}
+                    </td>
+                    <td className="py-2 px-3">
+                      {order.items.map((item) => item.name).join(", ")}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="py-4 text-center text-gray-500 italic"
+                  >
+                    No orders found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </Layout>
   );
-}
+};
 
 export default CustomerDetails;
