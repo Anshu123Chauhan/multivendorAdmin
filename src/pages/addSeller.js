@@ -7,6 +7,7 @@ import Layout from "../components/layout";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FloatingInput } from "../components/floatingInput";
 import BackHeader from "../components/backHeader";
+import { useNavigate } from "react-router-dom";
 
 const AddSeller = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,7 @@ const AddSeller = () => {
   const token = getCookie("zrotoken");
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+  const navigate = useNavigate()
 
   // 🔹 Field-level validation
   const validateField = (name, value) => {
@@ -177,6 +179,7 @@ const AddSeller = () => {
           commission:"",
           isActive:""
         });
+        navigate("/sellerList")
         setErrors({});
       } else {
         toast.warning(res?.data?.data?.message);

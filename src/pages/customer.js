@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Layout, { Container } from "../components/layout";
 import BackHeader from "../components/backHeader";
 import Input from "../components/inputContainer";
@@ -28,18 +28,16 @@ const Customer = () => {
   const [loading, setloading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const token = getCookie("zrotoken");
-   const decodedToken = useMemo(() => {
-        if (!token) return null;
-        try {
-          return jwtDecode(token);
-        } catch (error) {
-          console.error("Invalid token:", error);
-          return null;
-        }
-      }, [token]);
+  const decodedToken = useMemo(() => {
+    if (!token) return null;
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  }, [token]);
   const navigate = useNavigate();
-
-
 
   const fetchcustomer = async () => {
     setloading(true);
@@ -63,7 +61,6 @@ const Customer = () => {
 
   const toggleStatus = async (admin) => {
     const { id } = admin;
-
     try {
       const response = await axios.put(
         `${apiurl}/admin/auth/update`,
@@ -79,7 +76,6 @@ const Customer = () => {
           },
         }
       );
-
       const data = await response.data;
       if (data.success) {
         fetchcustomer();
@@ -119,9 +115,7 @@ const Customer = () => {
           "Content-Type": "application/json",
         },
       });
-
       const data = await response.data;
-
       if (data.success) {
         toast.success("Deleted Successfully");
         fetchcustomer();
@@ -134,28 +128,20 @@ const Customer = () => {
   const handleSearch = (value) => {
     const trimmedValue = value.trim();
     setSearchInput(trimmedValue);
-
     if (!trimmedValue) {
       setcustomerData(allAdmin);
       return;
     }
-
     console.log("trimmed value", trimmedValue);
-
     const updatedFilter = customerData.filter((item) =>
       item?.fullName?.toLowerCase().includes(trimmedValue.toLowerCase())
     );
-
     setcustomerData(updatedFilter);
   };
-   useEffect(() => {
-    // console.log("storeId", id);
-  
-    // if (decodedToken?.userType === "Admin") {
-      fetchcustomer();
-    // }
-  }, [decodedToken]); 
-  
+
+  useEffect(() => {
+    fetchcustomer();
+  }, [decodedToken]);
 
   return (
     <Layout>
@@ -205,31 +191,42 @@ const Customer = () => {
                 <tbody className="text-sm text-gray-700">
                   {customerData?.map((customer, index) => (
                     <tr
-                      key={customer?.id}
+                      key={customer?._id}
                       className="border-t relative overflow-hidden group hover:bg-gray-50 transition-all duration-500"
                     >
                       <td className="relative px-6 py-3">{index + 1}</td>
                       <td className="relative px-6 py-3 capitalize">
-                        {customer?.name}
+                        {customer?.name || "N/A"}
                       </td>
                       <td className="relative px-6 py-3">
-                        {customer?.address||"N/A"}
+                        {customer?.addresses?.length > 0 ? (
+                          <div>
+                            {customer.addresses[0].address},{" "}
+                            {customer.addresses[0].city},{" "}
+                            {customer.addresses[0].state}
+                          </div>
+                        ) : (
+                          "N/A"
+                        )}
                       </td>
-                      <td className="relative px-6 py-3">{customer?.phone}</td>
-                      <td className="relative px-6 py-3">{customer?.email}</td>
-                      {/* <td className="relative px-6 py-3">
-                        {customer?.isActive === true ? "Approved" : "Pending"}
-                      </td> */}
+                      <td className="relative px-6 py-3">
+                        {customer?.phone || "N/A"}
+                      </td>
+                      <td className="relative px-6 py-3">
+                        {customer?.email || "N/A"}
+                      </td>
                       <td className="relative px-4">
-                        <span className="flex gap-1 cursor-pointer">
+                        <span className="flex gap-1 cursor-pointer justify-center">
                           <AiOutlineEye
                             className="p-1 text-2xl rounded-md text-green-400 cursor-pointer hover:bg-blue-400 hover:text-white bg-blue-50 border border-blue-200 ml-1"
                             onClick={() => handleViewStatus(customer?._id)}
                           />
-                          {/* <MdDeleteForever
+                          {/* 
+                          <MdDeleteForever
                             className="p-1 text-2xl rounded-md text-red-400 cursor-pointer hover:bg-red-400 hover:text-white bg-red-50 border border-red-200 ml-1"
                             onClick={() => deletecustomer(customer?._id)}
-                          /> */}
+                          />
+                          */}
                         </span>
                       </td>
                     </tr>
