@@ -51,8 +51,8 @@ const Customer = () => {
         },
       });
       if (response.data.success === true) {
-        setcustomerData(response?.data?.sellerList);
-        setAllAdmin(response?.data?.sellerList);
+        setcustomerData(response?.data?.customerList);
+        setAllAdmin(response?.data?.customerList);
       }
     } catch (error) {
       console.error("Error fetching filters:", error);
@@ -151,9 +151,9 @@ const Customer = () => {
    useEffect(() => {
     // console.log("storeId", id);
   
-    if (decodedToken?.userType === "Admin") {
+    // if (decodedToken?.userType === "Admin") {
       fetchcustomer();
-    }
+    // }
   }, [decodedToken]); 
   
 
