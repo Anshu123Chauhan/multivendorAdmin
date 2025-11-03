@@ -224,7 +224,7 @@ const Brand = () => {
                           </td>
 
                           <td className="px-6 py-4 text-left">
-                            <img src={brand?.image} className="max-w-20 " />
+                            <img src={brand?.image} className="max-w-14 " />
                           </td>
                           
                         

@@ -12,6 +12,7 @@ import MobileFooter from "./mobileFooter";
 import { logoUrl } from "../config/config";
 import logo from "../assets/logo1.png";
 import { getCookie } from "../config/webStorage";
+import SearchHeader from "./searchHeader";
 
 const Layout = ({ children }) => {
   const {
@@ -42,16 +43,17 @@ const Layout = ({ children }) => {
 
   return (
     <div
-      className="layout h-screen w-full overflow-hidden bg-blue-50  "
+      className="layout h-screen w-full overflow-hidden bg-black"
       onClick={() => (openProfile === true ? setCloseProfile(false) : null)}
     >
-      <div className="flex gap-3  h-full md:p-2">
+      <SearchHeader />
+      <div className="flex gap-2  h-full bg-[#F1F1F1] rounded-xl">
         <div
           className={` sm:relative transition-all duration-500 ease-in-out sm:translate-x-0 z-20 ${
             isMenuOpen
               ? "absolute flex w-3/4 z-20 opacity-100 translate-x-0"
-              : "absolute flex w-3/4 sm:w-auto lg:w-[15%] -translate-x-full opacity-0 sm:opacity-100 "
-          }    md:flex flex-col  md:relative  gap-4 items-center  h-full px-3 pt-2  shadow-sm bg-white  rounded-xl  `}
+              : "absolute flex w-3/4 sm:w-auto lg:w-[16%] -translate-x-full opacity-0 sm:opacity-100 "
+          }    md:flex flex-col  md:relative  gap-4 items-center  h-full px-3 pt-2  shadow-sm bg-[#EBEBEB]`}
         >
           {/* <div
           className={`transition-all duration-500 ease-in-out lg:translate-x-0 ${
@@ -73,7 +75,7 @@ const Layout = ({ children }) => {
               alt="Logo"
               className="h-10 mb-6"
             /> */}
-            <h1 className="font-bold text-3xl text-center text-blue-500">{decodedToken?.userType}</h1>
+            {/* <h1 className="font-bold text-3xl text-center text-blue-500">{decodedToken?.userType}</h1> */}
             <div
               className="text-2xl text-white  block md:hidden cursor-pointer"
               onClick={() => setIsMenuOpen(false)}
@@ -91,7 +93,8 @@ const Layout = ({ children }) => {
               onClick={() => setIsMenuOpen(false)}
             ></div>
           )}
-          <Header className=" h-[10%] mb-2" />
+          {/* <Header className=" h-[10%] mb-2" /> */}
+
           <div
             className=" rounded-xl h-[80%] sm:h-[90%] overflow-auto"
             onClick={() => setCloseProfile(false)}
@@ -110,7 +113,7 @@ export default Layout;
 export const Container = ({ children, className, overflow, ...props }) => {
   return (
     <div
-      className={`bg-white/100 relative rounded-2xl p-2 h-full ${className} ${
+      className={`relative rounded-2xl py-2 h-full ${className} ${
         overflow ? overflow : "overflow-hidden"
       }`}
       {...props}

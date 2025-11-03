@@ -140,9 +140,9 @@ const Header = ({ className }) => {
         </div>
 
         {openProfile && (
-          <div className="absolute  p-5 shadow-sm right-[-12px] top-[100%] bg-white/100 px-2 z-30 w-44 mt-3 rounded-md capitalize whitespace-pre">
+          <div className="absolute  px-2 shadow-sm right-[-12px] top-[100%] bg-white/100 z-30 w-44 mt-3 rounded-md capitalize whitespace-pre">
             {userType === "Admin" && <div
-              className="text-red-500 flex items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
+              className="text-red-500 flex text-sm items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
               onClick={() => {
                 navigate("/addadmin");
               }}
@@ -151,7 +151,7 @@ const Header = ({ className }) => {
               Add More Admin
             </div>}
             <div
-              className="text-red-500 flex items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
+              className="text-red-500 flex text-sm items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
               onClick={() => {
                 navigate("/update_password");
               }}
@@ -160,7 +160,7 @@ const Header = ({ className }) => {
               Update Password
             </div>
             <div
-              className="text-red-500 flex items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
+              className="text-red-500 flex text-sm items-center  gap-2 cursor-pointer hover:bg-orange-400 hover:text-white p-1 rounded"
               onClick={() => {
                 navigate("/updateProfile");
               }}
