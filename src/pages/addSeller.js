@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { apiurl } from "../config/config";
@@ -24,8 +24,11 @@ const AddSeller = () => {
     ifscCode: "",
     bankAccount: "",
     addressProof: "",
-    commission:"",
-    isActive:""
+    commission: "",
+    isActive: "",
+    brandName: "",
+    companyWebsite: "",
+    sellerCategoryId: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -34,6 +37,38 @@ const AddSeller = () => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
   const navigate = useNavigate()
+  const [categories, setCategories] = useState([]);
+  const [err, setErr] = useState("");
+
+
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      setErr("");
+      const res = await axios.get(`${apiurl}/admin/list-seller-categories`, {
+        headers: { Authorization: token },
+      });
+
+      const raw = res?.data?.data ?? [];
+      const normalized = raw.map((c) => ({
+        _id: c._id,
+        name: c.sellerCategoryName || "-",
+      }));
+
+      setCategories(normalized);
+    } catch (e) {
+      console.error(e);
+      setErr(e?.response?.data?.message || e?.message || "Failed to load categories.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
 
   // 🔹 Field-level validation
   const validateField = (name, value) => {
@@ -81,6 +116,16 @@ const AddSeller = () => {
         break;
       case "addressProof":
         if (!value) error = "Address Proof Image is required.";
+        break;
+      case "brandName":
+        if (!value.trim()) error = "Brand name is required.";
+        break;
+      case "companyWebsite":
+        if (!/^https?:\/\/[^\s$.?#].[^\s]*$/.test(value.trim()))
+          error = "Enter a valid companyWebsite URL (must start with http or https).";
+        break;
+      case "sellerCategoryId":
+        if (!value.trim()) error = "Vendor category is required.";
         break;
       default:
         break;
@@ -137,9 +182,8 @@ const AddSeller = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length) {
-      return;
-    }
+    if (Object.keys(validationErrors).length) return;
+
     try {
       setLoading(true);
       let proofUrl = "";
@@ -151,15 +195,19 @@ const AddSeller = () => {
           return;
         }
       }
+
       const payload = {
         ...formData,
         addressProof: proofUrl,
+        brandName: formData.brandName.trim(),
+        companyWebsite: formData.companyWebsite.trim(),
+        sellerCategoryId: formData.sellerCategoryId.trim(),
       };
+
       const res = await axios.post(`${apiurl}/admin/seller-register`, payload, {
-        headers: {
-          Authorization: token,
-        },
+        headers: { Authorization: token },
       });
+
       if (res?.data?.success === true) {
         toast.success(res?.data?.message);
         setFormData({
@@ -176,10 +224,13 @@ const AddSeller = () => {
           ifscCode: "",
           bankAccount: "",
           addressProof: "",
-          commission:"",
-          isActive:""
+          commission: "",
+          isActive: "",
+          brandName: "",
+          companyWebsite: "",
+          sellerCategoryId: "",
         });
-        navigate("/sellerList")
+        navigate("/sellerList");
         setErrors({});
       } else {
         toast.warning(res?.data?.data?.message);
@@ -191,13 +242,15 @@ const AddSeller = () => {
     }
   };
 
+
+
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 py-6 px-4">
+      <div className="min-h-screen py-6 px-4">
         <BackHeader backButton={true} link="/sellerList" title="Back" />
         <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-xl space-y-6 overflow-y-auto">
           <h2 className="text-2xl font-bold text-center text-blue-600">
-            Create New Seller
+            Create New Vendor
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -222,8 +275,51 @@ const AddSeller = () => {
                 required={true}
               />
             </div>
+            <div className="grid md:grid-cols-2 gap-6">
 
-            <div className="grid md:grid-cols-1 gap-6">
+              {/* 🆕 Brand Name */}
+              <FloatingInput
+                label="Brand Name"
+                name="brandName"
+                value={formData.brandName}
+                onChange={handleChange}
+                error={errors.brandName}
+              />
+              {/* 🆕 companyWebsite */}
+              <FloatingInput
+                label="companyWebsite"
+                name="companyWebsite"
+                value={formData.companyWebsite}
+                onChange={handleChange}
+                error={errors.companyWebsite}
+              />
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex flex-col">
+                <label className="text-sm text-gray-700 mb-1">Select Category</label>
+
+                <select
+                  name="sellerCategoryId"
+                  value={formData.sellerCategoryId}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+                  disabled={loading}
+                >
+                  <option value="">-- Select Category --</option>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+
+                {loading && <p className="text-xs text-gray-500 mt-1">Loading categories...</p>}
+                {err && <p className="text-xs text-red-500 mt-1">{err}</p>}
+                {errors.sellerCategoryId && (
+                  <p className="text-xs text-red-500 mt-1">{errors.sellerCategoryId}</p>
+                )}
+              </div>
+              {/* <div className="grid md:grid-cols-1 gap-6"> */}
               <FloatingInput
                 label="Business Address"
                 type="textarea"
@@ -354,7 +450,7 @@ const AddSeller = () => {
                 error={errors.addressProof}
                 required={true}
               />
-               <FloatingInput
+              <FloatingInput
                 label="Commission in %"
                 type="text"
                 name="commission"
@@ -364,23 +460,23 @@ const AddSeller = () => {
                 required={true}
               />
               <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status<span className="text-red-500">*</span>
-              </label>
-              <FloatingInput
-                // label="Status"
-                type="radio"
-                name="isActive"
-                value={formData.isActive}
-                onChange={handleChange}
-                error={errors.isActive}
-                // required={true}
-                options={[
-                  { value: true, label: "Active" },
-                  { value: false, label: "Inactive" },
-                ]}
-              />
-            </div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status<span className="text-red-500">*</span>
+                </label>
+                <FloatingInput
+                  // label="Status"
+                  type="radio"
+                  name="isActive"
+                  value={formData.isActive}
+                  onChange={handleChange}
+                  error={errors.isActive}
+                  // required={true}
+                  options={[
+                    { value: true, label: "Active" },
+                    { value: false, label: "Inactive" },
+                  ]}
+                />
+              </div>
             </div>
 
             <button
@@ -388,7 +484,7 @@ const AddSeller = () => {
               disabled={loading}
               className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-[#c3490a] transition"
             >
-              {loading ? "Adding..." : "Add Seller"}
+              {loading ? "Adding..." : "Add Vendor"}
             </button>
           </form>
         </div>

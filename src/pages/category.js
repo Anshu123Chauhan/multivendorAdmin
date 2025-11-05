@@ -239,7 +239,7 @@ const Category = () => {
                           </td>
 
                           <td className="px-6 py-4 text-left">
-                            <img src={category?.image} className="max-w-20 " />
+                            <img src={category?.image} className="max-w-14 " />
                           </td>
                           
                         

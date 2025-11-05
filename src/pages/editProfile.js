@@ -197,7 +197,7 @@ const EditProfile = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 py-6 px-4">
+      <div className="min-h-screen py-6 px-4">
         <BackHeader backButton={true} link="/dashboard" title="Back" />
         <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-xl space-y-6 overflow-y-auto">
           <h2 className="text-2xl font-bold text-center text-blue-600">

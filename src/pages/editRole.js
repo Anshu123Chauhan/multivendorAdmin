@@ -154,7 +154,7 @@ export default function EditRole() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-100 p-4 sm:p-6">
+      <div className="min-h-screen p-4 sm:p-6">
         <BackHeader backButton={true} link="/userlist" title="Back" />
         <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
           {/* Header */}

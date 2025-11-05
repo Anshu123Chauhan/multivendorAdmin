@@ -169,7 +169,7 @@ const EditSubcategory = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 py-6 px-4">
+      <div className="min-h-screen py-6 px-4">
         <BackHeader
           backButton={true}
           link="/subcategory"

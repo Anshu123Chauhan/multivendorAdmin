@@ -1,108 +1,188 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { BiSolidDashboard, BiSolidOffer } from "react-icons/bi";
+import { NavLink, useLocation } from "react-router-dom";
+import { FaUsers } from "react-icons/fa";
+import { SiGoogleanalytics } from "react-icons/si";
 import { MdOutlineCategory } from "react-icons/md";
 import { BiCategoryAlt } from "react-icons/bi";
-import { RiServiceLine, RiShoppingCart2Line } from "react-icons/ri";
-import { CiCreditCard2, CiFilter } from "react-icons/ci";
+import { BiSolidUser } from "react-icons/bi";
+import { IoIosImages } from "react-icons/io";
+import { RiSettings4Fill } from "react-icons/ri";
+import { PiArrowBendDownRightLight } from "react-icons/pi";
 import { useUser } from "../config/userProvider";
 import { useLayout } from "../config/layoutContext";
-import { IoIosImages, IoIosPeople } from "react-icons/io";
-import { IoAppsSharp, IoSettingsOutline } from "react-icons/io5";
-import { PiArrowBendDownRightLight } from "react-icons/pi";
-import { LiaRupeeSignSolid } from "react-icons/lia";
-import { GoImage } from "react-icons/go";
-import { IoVideocamSharp } from "react-icons/io5";
 import { jwtDecode } from "jwt-decode";
 import { getCookie } from "../config/webStorage";
 import "../../src/App.css";
+import { IoIosArrowUp } from "react-icons/io";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { TbCategoryPlus } from "react-icons/tb";
+
+
 
 const Sidebar = () => {
   const { isMenuOpen, setIsMenuOpen, permissions } = useUser();
   const { setIsSettingOpen } = useLayout();
   const [filteredMenu, setFilteredMenu] = useState([]);
-const token = getCookie("zrotoken");
-  const navigate = useNavigate();
+  const [openDropdown, setOpenDropdown] = useState(null); // Fixed: no 'number' type
+  const token = getCookie("zrotoken");
   const location = useLocation().pathname;
 
-  // Decode token only when it changes
-const decodedToken = useMemo(() => {
-  if (!token) return null;
-  try {
-    return jwtDecode(token);
-  } catch (error) {
-    console.error("Invalid token:", error);
-    return null;
-  }
-}, [token]);
-
+  const decodedToken = useMemo(() => {
+    if (!token) return null;
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  }, [token]);
 
   useEffect(() => {
-     const NavigationData = {
-    superadmin: [
-      { title: "Dashboard", icon: <BiSolidDashboard />, location: "/dashboard", permission: "dashboard" },
-      { title: "Seller", icon: <BiSolidDashboard />, location: "/sellerList", permission: "sellerList" },
-      { title: "User", icon: <BiSolidDashboard />, location: "/userlist" },
-      { title: "Category", icon: <MdOutlineCategory />, location: "/category", permission: "catgory" },
-      { title: "Sub Category", icon: <BiCategoryAlt />, location: "/subcategory", permission: "subcatgory" },
-      { title: "Brand", icon: <MdOutlineCategory />, location: "/brand", permission: "brand" },
-      // { title: "Attribute", icon: <MdOutlineCategory />, location: "/attribute", permission: "attribute" },
-
-      { title: "Product", icon: <RiServiceLine />, location: "/product" },
-
-      // { title: "Services", icon: <RiServiceLine />, location: "/service" },
-      // { title: "Filter", icon: <CiFilter />, location: "/filter", permission: "filter" },
-      { title: "Banner", icon: <IoIosImages />, location: "/banner", permission: "banner" },
-      { title: "customers", icon: <IoIosPeople />, location: "/customer", permission: "customer" },
-      {
-        title: "Order",
-        icon: <RiShoppingCart2Line />,
-        location: "/orders",
-        permission: "order",
-        // submenu: [
-        //     { title: "Abandoned checkouts", icon: <IoIosPeople />, location: "/orders/abandoned" },
-        //   ],
+    const NavigationData = {
+      superadmin: [
+        {
+          title: "Analytics",
+          icon: <SiGoogleanalytics />,
+          location: "/dashboard",
+          permission: "dashboard",
         },
-        { title: "settings", icon: <IoSettingsOutline />, location: "/settings", permission: "settings" },
-      // { title: "Price Code", icon: <LiaRupeeSignSolid />, location: "/pricemapping", permission: "customers" },
-      // { title: "Image Mapping", icon: <GoImage />, location: "/imagemapping", permission: "customers" },
-      // { title: "Video Mapping", icon: <IoVideocamSharp />, location: "/videomapping", permission: "customers" },
-      // { title: "Analytics", icon: <IoAppsSharp />, location: "/analytics", permission: "analysis" },
-      // { title: "Abandoned Checkout", icon: <BiSolidOffer />, location: "/abandoned" },
-      // { title: "coupons", icon: <CiCreditCard2 />, location: "/coupons", permission: "coupons" },
-    ],
-  };
-  
+        {
+          title: "Vendor",
+          icon: <FaUsers />,
+          submenu: [
+            {
+              title: "Manage Vendor",
+              icon: <FaUsers />,
+              location: "/sellerList",
+              permission: "sellerList",
+            },
+            {
+              title: "Manage Category",
+              icon: <TbCategoryPlus />,
+              location: "/managevender",
+            },
+          ],
+        },
+        {
+          title: "User",
+          icon: (
+            <img
+              src="http://res.cloudinary.com/dv5del8nh/image/upload/v1761648460/fapd8dqq5j3ircgt4uqy.png"
+              alt="user"
+            />
+          ),
+          location: "/userlist",
+        },
+        {
+          title: "Category",
+          icon: <MdOutlineCategory />,
+          location: "/category",
+          permission: "catgory",
+        },
+        {
+          title: "Sub Category",
+          icon: <BiCategoryAlt />,
+          location: "/subcategory",
+          permission: "subcatgory",
+        },
+        {
+          title: "Brand",
+          icon: (
+            <img
+              src="http://res.cloudinary.com/dv5del8nh/image/upload/v1761649264/r12diwccvmpwdaukmybn.png"
+              alt="brand"
+            />
+          ),
+          location: "/brand",
+          permission: "brand",
+        },
+        {
+          title: "Product",
+          icon: (
+            <img
+              src="http://res.cloudinary.com/dv5del8nh/image/upload/v1761648357/lsk6qwd2oyx3bloiztvd.png"
+              alt="product"
+            />
+          ),
+          location: "/product",
+        },
+        {
+          title: "Banner",
+          icon: <IoIosImages />,
+          location: "/banner",
+          permission: "banner",
+        },
+        {
+          title: "Customers",
+          icon: <BiSolidUser />,
+          location: "/customer",
+          permission: "customer",
+        },
+        {
+          title: "Order",
+          icon: (
+            <img
+              src="http://res.cloudinary.com/dv5del8nh/image/upload/v1761648549/yrgcasskodidwbfyexth.png"
+              alt="order"
+            />
+          ),
+          location: "/orders",
+          permission: "order",
+        },
+      ],
+    };
+
     let menu = NavigationData.superadmin;
+
     if (decodedToken?.userType === "Admin") {
-      menu = NavigationData.superadmin
+      menu = NavigationData.superadmin;
     }
-   
+
     if (decodedToken?.userType === "Seller") {
-      const exclude = ["Seller", "Category", "Sub Category", "Brand", "Filter","Banner", "settings"];
+      const exclude = [
+        "Seller",
+        "Category",
+        "Sub Category",
+        "Brand",
+        "Filter",
+        "Banner",
+        "settings",
+      ];
       menu = menu.filter((item) => !exclude.includes(item.title));
     }
 
-  if (decodedToken?.userType === "User") {
-    const userPermissions = Array.isArray(decodedToken?.permission) ? decodedToken.permission : [];
-    const allowedTabs = new Set(
-      userPermissions.filter((p) => p.p_read).map((p) => p.tab_name.toLowerCase())
-    );
-    menu = menu.filter((item) => {
-      if (item.title.toLowerCase() === "dashboard") return true;
-      if (!item.permission) return allowedTabs.has(item.title.toLowerCase());
-      return allowedTabs.has(item.permission.toLowerCase());
-    });
-  }
+    if (decodedToken?.userType === "User") {
+      const userPermissions = Array.isArray(decodedToken?.permission)
+        ? decodedToken.permission
+        : [];
+      const allowedTabs = new Set(
+        userPermissions
+          .filter((p) => p.p_read)
+          .map((p) => p.tab_name.toLowerCase())
+      );
 
+      const filterItem = (item) => {
+        if (item.title.toLowerCase() === "dashboard") return true;
+        if (item.submenu) {
+          const filteredSub = item.submenu.filter((sub) => {
+            if (!sub.permission) return true;
+            return allowedTabs.has(sub.permission.toLowerCase());
+          });
+          return filteredSub.length > 0 ? { ...item, submenu: filteredSub } : null;
+        }
+        if (!item.permission) return allowedTabs.has(item.title.toLowerCase());
+        return allowedTabs.has(item.permission.toLowerCase());
+      };
+
+      menu = menu.map(filterItem).filter((item) => item !== null);
+    }
 
     setFilteredMenu(menu);
   }, [decodedToken, permissions]);
 
-  const MenuDiv = ({ children, color, className, onClick, backgroundColor }) => (
+  const MenuDiv = ({ children, className, onClick }) => (
     <div
-      className={`flex items-center gap-1.5 ${className}`}
-      style={{ color: color || "", backgroundColor: backgroundColor || "" }}
+      className={`flex items-center gap-1.5 ${className ?? ""}`}
       onClick={onClick}
     >
       {children}
@@ -111,7 +191,7 @@ const decodedToken = useMemo(() => {
 
   const MenuItems = ({ icon, title }) => (
     <>
-      <span className="text-2xl">{icon}</span>
+      <span className="text-md">{icon}</span>
       <p className="sm:hidden lg:block text-sm capitalize">{title}</p>
     </>
   );
@@ -119,59 +199,93 @@ const decodedToken = useMemo(() => {
   return (
     <div className="flex flex-col justify-between w-full h-full overflow-scroll scroll-smooth hide-scrollbar py-2">
       <div className="flex flex-col items-start w-full h-full">
-        {filteredMenu.map((item, index) => (
-          <div key={index} className="flex flex-col w-full my-1">
-            <NavLink
-              onClick={() => isMenuOpen && setIsMenuOpen(false)}
-              className={({ isActive }) => `
-                px-2 py-1.5 rounded-lg w-full border-none font-medium capitalize transition-all duration-300
-                ${isActive ? "bg-[#ECF3FF] text-[#465fff]" : "hover:bg-[#ECF3FF] text-[#344054]"}
-              `}
-              to={item?.location}
-            >
-              <MenuDiv>
-                <MenuItems icon={item?.icon} title={item?.title} />
-              </MenuDiv>
-            </NavLink>
+        <div className="flex flex-col items-start w-full h-[calc(90vh-60px)]">
+          {filteredMenu.map((item, index) => (
+            <div key={index} className="flex flex-col w-full my-0.5">
+              {item.submenu ? (
+                <div>
+                  <div
+                    onClick={() =>
+                      setOpenDropdown(openDropdown === index ? null : index)
+                    }
+                    className={`
+                      px-2 py-1 rounded-lg w-full font-medium capitalize transition-all duration-300 cursor-pointer flex items-center
+                      ${openDropdown === index
+                        ? "bg-white text-black"
+                        : "hover:bg-[#f1f2f3] text-[#344054]"
+                      }
+                    `}
+                  >
+                    <MenuDiv>
+                      <MenuItems icon={item.icon} title={item.title} />
+                      <span className="ml-auto text-xs">
+                        {openDropdown === index ? <MdKeyboardArrowDown /> : <IoIosArrowUp />}
+                      </span>
+                    </MenuDiv>
+                  </div>
 
-            {/* Submenu */}
-            {item?.location &&
-              location.includes(item?.location) &&
-              Array.isArray(item?.submenu) &&
-              item.submenu.length > 0 && (
-                <div className="pl-6">
-                  {item.submenu.map((subitem, subIndex) => (
-                    <NavLink to={subitem?.location} key={subIndex}>
-                      <MenuDiv
-                        color={location.includes(subitem?.location) ? "#fff" : "#000"}
-                        backgroundColor={location.includes(subitem?.location) ? "#ff611695" : ""}
-                        className="border border-transparent hover:border-orange-300 hover:text-orange-500 cursor-pointer my-2 p-1 rounded-md relative group"
-                      >
-                        <PiArrowBendDownRightLight
-                          className={`text-orange-600 absolute right-full mr-1 ${
-                            location.includes(subitem?.location) ? "block" : "hidden"
-                          }`}
-                        />
-                        <MenuItems icon={subitem?.icon} title={subitem?.title} />
-                      </MenuDiv>
-                    </NavLink>
-                  ))}
+                  {openDropdown === index && (
+                    <div className="pl-6 mt-1">
+                      {item.submenu.map((sub, subIdx) => (
+                        <NavLink
+                          key={subIdx}
+                          to={sub.location}
+                          onClick={() => isMenuOpen && setIsMenuOpen(false)}
+                          className={({ isActive }) => `
+                            block px-3 py-1.5 my-1 rounded-md text-sm transition-all flex items-center
+                            ${isActive
+                              ? "bg-white-100 font-medium"
+                              : "text-gray-600 hover:bg-gray-100"
+                            }
+                          `}
+                        >
+                          <MenuDiv>
+                            <MenuItems icon={sub.icon} title={sub.title} />
+                          </MenuDiv>
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
                 </div>
+              ) : (
+                <NavLink
+                  to={item.location}
+                  onClick={() => isMenuOpen && setIsMenuOpen(false)}
+                  className={({ isActive }) => `
+                    px-2 py-1 rounded-lg w-full font-medium capitalize transition-all duration-300 flex items-center
+                    ${isActive
+                      ? "bg-white text-black"
+                      : "hover:bg-[#f1f2f3] text-[#344054]"
+                    }
+                  `}
+                >
+                  <MenuDiv>
+                    <MenuItems icon={item.icon} title={item.title} />
+                  </MenuDiv>
+                </NavLink>
               )}
-          </div>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
 
-      {/* <NavLink to={"/settings"}>
-        <button
-          onClick={() => setIsSettingOpen(true)}
-          className="text-black px-2 py-2 rounded-lg w-full flex items-center gap-1.5 border-transparent capitalize text-sm border hover:border-orange-300 hover:text-orange-500 mt-12 mb-4"
+        <NavLink
+          to="/settings"
+          className={({ isActive }) => `
+            px-2 py-1 rounded-lg w-full font-medium capitalize transition-all duration-300 flex items-center
+            ${isActive
+              ? "bg-white text-black"
+              : "hover:bg-[#f1f2f3] text-[#344054]"
+            }
+          `}
         >
-          <div className="flex gap-2">
-            <IoSettingsOutline className="text-xl" /> Settings
+          <div className="flex gap-2 items-center">
+            <RiSettings4Fill className="text-lg" />
+            <p className="sm:hidden lg:block text-sm capitalize mb-0.5">
+              Settings
+            </p>
           </div>
-        </button>
-      </NavLink> */}
+        </NavLink>
+      </div>
     </div>
   );
 };
