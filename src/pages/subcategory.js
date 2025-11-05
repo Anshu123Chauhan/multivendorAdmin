@@ -237,7 +237,7 @@ const Subsubcategory = () => {
                           <td
                             className="px-6 py-4 text-center"
                           >
-                            {subcategory?.image ? <img src={subcategory?.image} className="max-w-20" /> : "NA"}
+                            {subcategory?.image ? <img src={subcategory?.image} className="max-w-14" /> : "NA"}
 
                           </td>
                           

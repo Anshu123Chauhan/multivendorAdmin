@@ -188,7 +188,7 @@ const EditOrderDetails = () => {
   }
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 py-6 px-4">
+      <div className="min-h-screen py-6 px-4">
         <BackHeader backButton={true} link="/orders" title="Back" />
 
         <div className="mx-auto px-4 max-w-5xl">

@@ -39,9 +39,9 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <div className="relative">
+      <div className="flex items-center justify-between py-3">
+        {/* <h1 className="text-2xl font-semibold">Dashboard</h1> */}
+        {/* <div className="relative">
           {!isOpenSearch ? (
             <div onClick={() => setIsOpenSearch(true)}>
               <FiSearch />
@@ -60,7 +60,7 @@ const Dashboard = () => {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
       <Dashboard1 permissions={permissions} userData={userData} token={token} />
     </Layout>
@@ -231,7 +231,7 @@ const Dashboard1 = ({ permissions, userData, token }) => {
     getAnalyticsData?.today || {};
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4 px-2">
       <div className="flex flex-col md:flex-row w-full gap-4">
         {/* Left column: Analytics */}
         <div className="w-full md:w-1/3">

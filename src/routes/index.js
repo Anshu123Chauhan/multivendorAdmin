@@ -94,6 +94,7 @@ import EditProfile from "../pages/editProfile.js";
 import Orders from "../pages/orders.js";
 import OrderDetails from "../pages/orderDetails.js";
 import EditOrderDetails from "../pages/editorderDetails.js"
+import ManageVendor from "../pages/ManageVendor.js";
 
 const Router = () => {
   const { userData, currentLocation, token } = useUser();
@@ -128,14 +129,17 @@ const Router = () => {
       <Route path="/addseller" element={<AddSeller />} />
       <Route path="/sellerList" element={<Seller />} />
       <Route path="/sellerDetails/:id" element={<SellerDetails />} />
-      
-      
+      <Route
+        path="/managevender"
+        element={<PrivateRoute element={<ManageVendor />} />}
+      />
+
       <Route
         path="/addbanner"
         element={<PrivateRoute element={<AddBanner />} />}
       />
-      
-      <Route path="/account" element={<PrivateRoute element={<Account />} />} />     
+
+      <Route path="/account" element={<PrivateRoute element={<Account />} />} />
       <Route
         path="/dashboard"
         element={
@@ -295,7 +299,7 @@ const Router = () => {
         path="/languages"
         element={<PrivateRoute element={<Language />} />}
       />
-       <Route
+      <Route
         path="/settings"
         element={<PrivateRoute element={<Settings />} />}
       />
@@ -425,7 +429,7 @@ const Router = () => {
         element={<PrivateRoute element={<EditServices />} />}
       />
 
-       <Route
+      <Route
         path="/brand"
         element={<PrivateRoute element={<Brand />} />}
       />
@@ -469,6 +473,7 @@ const Router = () => {
       <Route path="/customers/:id" element={<PrivateRoute element={<CustomerDetails />} />} />
       <Route path="/products/:id" element={<PrivateRoute element={<ProductDetails />} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
+
     </Routes>
   );
 };
